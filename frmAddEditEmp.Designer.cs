@@ -263,9 +263,9 @@ namespace Payroll
             this.mstStreet.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mstStreet.Location = new System.Drawing.Point(194, 257);
             this.mstStreet.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.mstStreet.Mask = "??????????????????????";
+            this.mstStreet.Mask = "CCCCCCCCCCCCCCCCCCC";
             this.mstStreet.Name = "mstStreet";
-            this.mstStreet.Size = new System.Drawing.Size(228, 30);
+            this.mstStreet.Size = new System.Drawing.Size(217, 30);
             this.mstStreet.TabIndex = 16;
             // 
             // mstCity

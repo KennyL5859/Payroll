@@ -51,6 +51,7 @@ namespace Payroll
             {
                 this.Text = "Add New Employee";
                 tosbtnSave.ToolTipText = "Save New Employee";
+                radSingle.Checked = true;
             }
         }
 
@@ -59,61 +60,109 @@ namespace Payroll
             if (isEdit)
             {
                 ClearBackgroundColors();
-                DefensiveFeilds();
+
+                if (!CheckFields())
+                    return;
+
                 UpdateEmployeeFields();
             }
             else
             {
                 ClearBackgroundColors();
-                DefensiveFeilds();
+
+                if (!CheckFields())
+                    return;
+
+                AddNewEmployee();           
             }
+
+            this.Close();
         }
 
-
-        private void DefensiveFeilds()
+        private bool CheckFields()
         {
             if (!CheckNull(mstFirstName, "First Name field must be filled out."))
-                return;
-
+                return false;
+            
             if (!CheckNull(mstLastName, "Last Name field must be filled out."))
-                return;
+                return false;
 
             if (!CheckSSN(mstSSN, "SSN must be in XXX-XX-XXXX format"))
-                return;
+                return false;
 
-            if (!CheckDateTime(mstDob, "Date must be filled out"))
-                return;
+            if (!CheckDateTime(mstDob, "DOB must be filled out"))
+                return false;
 
             if (!CheckNull(mstStreet, "Street must be filled out"))
-                return;
+                return false;
 
             if (!CheckNull(mstCity, "City must be filled out"))
-                return;
+                return false;
 
             if (!CheckNull(mstZipCode, "Zip Code must be filled out"))
-                return;
+                return false;
 
             if (!CheckNull(mstStreet, "State must be filled out"))
-                return;
+                return false;
 
             if (!CheckNull(mstSalary, "Salary must be fille out"))
-                return;
+                return false;
 
             if (!CheckNull(mstXFed, "Extra Fed must be filled out"))
-                return;
+                return false;
 
             if (!CheckNull(mstXState, "Extra State must be filled out"))
-                return;
+                return false;
 
             if (!CheckDDLLists(ddlChildDep, "Must select # of child dependents"))
-                return;
+                return false;
 
             if (!CheckDDLLists(ddlOtherDep, "Must select # of other dependents"))
-                return;
+                return false;
 
             if (!CheckDDLLists(ddlWithholding, "Must select # of withholdings"))
-                return;
+                return false;
+
+            return true;
         }
+
+        private void AddNewEmployee()
+        {
+            string fName = mstFirstName.Text;
+            string lName = mstLastName.Text;
+            string ssn = mstSSN.Text;
+            DateTime dob = DateTime.ParseExact(mstDob.Text, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            string street = mstStreet.Text;
+            string city = mstCity.Text;
+            string zipCode = mstZipCode.Text;
+            string state = mstState.Text;
+            double salary = Convert.ToDouble(mstSalary.Text);
+            double xFed = Convert.ToDouble(mstXFed.Text);
+            double xState = Convert.ToDouble(mstXState.Text);
+            int child = ddlChildDep.SelectedIndex;
+            int other = ddlOtherDep.SelectedIndex;
+            int withhold = ddlWithholding.SelectedIndex;
+            string status = "";
+
+            if (radSingle.Checked)
+                status = "S";
+            else if (radHOH.Checked)
+                status = "HOH";
+            else if (radMFS.Checked)
+                status = "MFS";
+            else if (radMFJ.Checked)
+                status = "MFJ";
+
+            bool multiple = chkMultiple.Checked;
+            DateTime start = dtpStart.Value.Date;
+            DateTime end = dtpEnd.Value.Date;
+
+            Employee newEmp = new Employee(fName, lName, ssn, dob, status, withhold,
+                child, other, xFed, xState, multiple, street, city, state, zipCode,
+                salary, start, end);
+
+            EmpList.Add(newEmp);
+        }    
 
         private void ClearBackgroundColors()
         {
@@ -150,8 +199,8 @@ namespace Payroll
 
         private bool CheckDateTime(MaskedTextBox mst, string msg)
         {
-            string pattern = @"\d{2}\\?\d{2}\\?\d{2}";
-            Match m = Regex.Match(mstSSN.Text, pattern);
+            string pattern = @"\d{2}\/\d{2}\/\d{4}";
+            Match m = Regex.Match(mst.Text, pattern);
 
             if (m.Success)
             {
@@ -228,6 +277,7 @@ namespace Payroll
             else if (radMFJ.Checked)
                 EmpList[empIndex].fStatus = "MFJ";
 
+            EmpList[empIndex].multipleJobs = chkMultiple.Checked;
             DateTime start = dtpStart.Value.Date;
             DateTime end = dtpEnd.Value.Date;
             EmpList[empIndex].startDate = start;

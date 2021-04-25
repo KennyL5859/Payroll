@@ -31,6 +31,7 @@ namespace Payroll
         {
             frmAddEditEmp addForm = new frmAddEditEmp(false, EmpList);
             addForm.ShowDialog();
+            UpdateFile();
         }
 
         private void tosbtnDelete_Click(object sender, EventArgs e)
