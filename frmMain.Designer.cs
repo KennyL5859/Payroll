@@ -119,6 +119,7 @@ namespace Payroll
             this.dgvEmployeeData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvEmployeeData.Size = new System.Drawing.Size(840, 302);
             this.dgvEmployeeData.TabIndex = 1;
+            this.dgvEmployeeData.DoubleClick += new System.EventHandler(this.dgvEmployeeData_DoubleClick);
             // 
             // sstripMain
             // 
@@ -126,22 +127,22 @@ namespace Payroll
             this.sstripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toslblMessage,
             this.tosStatus});
-            this.sstripMain.Location = new System.Drawing.Point(0, 392);
+            this.sstripMain.Location = new System.Drawing.Point(0, 398);
             this.sstripMain.Name = "sstripMain";
             this.sstripMain.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.sstripMain.Size = new System.Drawing.Size(898, 28);
+            this.sstripMain.Size = new System.Drawing.Size(898, 22);
             this.sstripMain.TabIndex = 2;
             this.sstripMain.Text = "statusStrip1";
             // 
             // toslblMessage
             // 
             this.toslblMessage.Name = "toslblMessage";
-            this.toslblMessage.Size = new System.Drawing.Size(0, 21);
+            this.toslblMessage.Size = new System.Drawing.Size(0, 15);
             // 
             // tosStatus
             // 
             this.tosStatus.Name = "tosStatus";
-            this.tosStatus.Size = new System.Drawing.Size(0, 21);
+            this.tosStatus.Size = new System.Drawing.Size(0, 15);
             // 
             // frmMain
             // 

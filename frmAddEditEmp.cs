@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace Payroll
 {
@@ -57,13 +58,147 @@ namespace Payroll
         {
             if (isEdit)
             {
+                ClearBackgroundColors();
+                DefensiveFeilds();
                 UpdateEmployeeFields();
             }
             else
             {
-
+                ClearBackgroundColors();
+                DefensiveFeilds();
             }
         }
+
+
+        private void DefensiveFeilds()
+        {
+            if (!CheckNull(mstFirstName, "First Name field must be filled out."))
+                return;
+
+            if (!CheckNull(mstLastName, "Last Name field must be filled out."))
+                return;
+
+            if (!CheckSSN(mstSSN, "SSN must be in XXX-XX-XXXX format"))
+                return;
+
+            if (!CheckDateTime(mstDob, "Date must be filled out"))
+                return;
+
+            if (!CheckNull(mstStreet, "Street must be filled out"))
+                return;
+
+            if (!CheckNull(mstCity, "City must be filled out"))
+                return;
+
+            if (!CheckNull(mstZipCode, "Zip Code must be filled out"))
+                return;
+
+            if (!CheckNull(mstStreet, "State must be filled out"))
+                return;
+
+            if (!CheckNull(mstSalary, "Salary must be fille out"))
+                return;
+
+            if (!CheckNull(mstXFed, "Extra Fed must be filled out"))
+                return;
+
+            if (!CheckNull(mstXState, "Extra State must be filled out"))
+                return;
+
+            if (!CheckDDLLists(ddlChildDep, "Must select # of child dependents"))
+                return;
+
+            if (!CheckDDLLists(ddlOtherDep, "Must select # of other dependents"))
+                return;
+
+            if (!CheckDDLLists(ddlWithholding, "Must select # of withholdings"))
+                return;
+        }
+
+        private void ClearBackgroundColors()
+        {
+            mstFirstName.BackColor = Color.White;
+            mstLastName.BackColor = Color.White;
+            mstSSN.BackColor = Color.White;
+            mstDob.BackColor = Color.White;
+            mstStreet.BackColor = Color.White;
+            mstCity.BackColor = Color.White;
+            mstZipCode.BackColor = Color.White;
+            mstState.BackColor = Color.White;
+            mstSalary.BackColor = Color.White;
+            mstXFed.BackColor = Color.White;
+            mstXState.BackColor = Color.White;
+            ddlChildDep.BackColor = Color.White;
+            ddlOtherDep.BackColor = Color.White;
+            ddlWithholding.BackColor = Color.White;
+        }
+
+        private bool CheckDDLLists(ComboBox ddl, string msg)
+        {
+            if (ddl.SelectedIndex == -1)
+            {
+                MessageBox.Show(msg);
+                ddl.BackColor = Color.LightYellow;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+
+        private bool CheckDateTime(MaskedTextBox mst, string msg)
+        {
+            string pattern = @"\d{2}\\?\d{2}\\?\d{2}";
+            Match m = Regex.Match(mstSSN.Text, pattern);
+
+            if (m.Success)
+            {
+                return true;
+            }
+            else
+            {
+                MessageBox.Show(msg);
+                mst.BackColor = Color.LightYellow;
+                return false;
+            }
+        }
+
+
+        private bool CheckSSN(MaskedTextBox mst, string msg)
+        {
+            string pattern = @"\d{3}-?\d{2}-?\d{4}";
+            Match m = Regex.Match(mstSSN.Text, pattern);
+
+            if (m.Success)
+            {
+                return true;
+            }
+            else
+            {
+                MessageBox.Show(msg);
+                mst.BackColor = Color.LightYellow;
+                return false;
+            }
+        }
+
+
+
+        private bool CheckNull(MaskedTextBox mst, string msg)
+        {
+            if (mst.Text == "")
+            {
+                MessageBox.Show(msg);
+                mst.BackColor = Color.LightYellow;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
 
         private void UpdateEmployeeFields()
         {

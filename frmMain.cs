@@ -73,38 +73,6 @@ namespace Payroll
             UpdateFile();
         }
 
-        private void UpdateFile()
-        {
-            dgvEmployeeData.DataSource = null;
-            WriteToFile();
-            EmpList.Clear();
-            ReadFile();
-            tosStatus.Text = "Employee data has been updated";          
-        }
-
-
-        private void WriteToFile()
-        {
-            File.WriteAllText(EMPDATAPATH, string.Empty);
-
-            using (StreamWriter wr = new StreamWriter(EMPDATAPATH))
-            {
-                for (int i = 0; i < EmpList.Count; i++)
-                {
-                    string[] attributes = EmpList[i].GetEmpStringAttributes();
-                    StringBuilder sb = new StringBuilder();
-
-                    for (int x = 0; x < attributes.Length - 1; x++)
-                    {
-                        sb.Append(attributes[x] + ",");                      
-                    }
-                    sb.Append(attributes[attributes.Length - 1]);
-
-                    wr.WriteLine(sb.ToString());
-                }
-            }
-        }  
-
 
         private void tosbtnEdit_Click(object sender, EventArgs e)
         {
@@ -112,6 +80,11 @@ namespace Payroll
             frmAddEditEmp editForm = new frmAddEditEmp(true, EmpList, empIndex);
             editForm.ShowDialog();
             UpdateFile();
+        }
+
+        private void dgvEmployeeData_DoubleClick(object sender, EventArgs e)
+        {
+            tosbtnEdit_Click(sender, e);
         }
 
         private void ReadFile()
@@ -142,6 +115,36 @@ namespace Payroll
             dgvEmployeeData.DataSource = EmpList;
             dgvEmployeeData.Refresh();
             ChangeDataColumnNames();
+        }
+
+        private void WriteToFile()
+        {
+            File.WriteAllText(EMPDATAPATH, string.Empty);
+
+            using (StreamWriter wr = new StreamWriter(EMPDATAPATH))
+            {
+                for (int i = 0; i < EmpList.Count; i++)
+                {
+                    string[] attributes = EmpList[i].GetEmpStringAttributes();
+                    StringBuilder sb = new StringBuilder();
+
+                    for (int x = 0; x < attributes.Length - 1; x++)
+                    {
+                        sb.Append(attributes[x] + ",");
+                    }
+                    sb.Append(attributes[attributes.Length - 1]);
+
+                    wr.WriteLine(sb.ToString());
+                }
+            }
+        }
+
+        private void UpdateFile()
+        {
+            dgvEmployeeData.DataSource = null;
+            WriteToFile();
+            EmpList.Clear();
+            ReadFile();
         }
 
         private void ChangeDataColumnNames()
@@ -194,6 +197,7 @@ namespace Payroll
 
             return newEmp;
         }
+
 
     }
 }
