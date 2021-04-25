@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 namespace Payroll
 {
@@ -69,17 +70,18 @@ namespace Payroll
             }
 
             // update datagridview
-            dgvEmployeeData.DataSource = null;
-            WriteToFile();
-            UpdateFile();   
-
+            UpdateFile();
         }
 
         private void UpdateFile()
         {
+            dgvEmployeeData.DataSource = null;
+            WriteToFile();
             EmpList.Clear();
             ReadFile();
+            tosStatus.Text = "Employee data has been updated";          
         }
+
 
         private void WriteToFile()
         {
@@ -109,6 +111,7 @@ namespace Payroll
             int empIndex = dgvEmployeeData.CurrentCell.RowIndex;
             frmAddEditEmp editForm = new frmAddEditEmp(true, EmpList, empIndex);
             editForm.ShowDialog();
+            UpdateFile();
         }
 
         private void ReadFile()
@@ -191,5 +194,6 @@ namespace Payroll
 
             return newEmp;
         }
+
     }
 }

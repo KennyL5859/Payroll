@@ -39,6 +39,7 @@ namespace Payroll
             this.dgvEmployeeData = new System.Windows.Forms.DataGridView();
             this.sstripMain = new System.Windows.Forms.StatusStrip();
             this.toslblMessage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tosMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEmployeeData)).BeginInit();
             this.sstripMain.SuspendLayout();
@@ -123,18 +124,24 @@ namespace Payroll
             // 
             this.sstripMain.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.sstripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toslblMessage});
-            this.sstripMain.Location = new System.Drawing.Point(0, 398);
+            this.toslblMessage,
+            this.tosStatus});
+            this.sstripMain.Location = new System.Drawing.Point(0, 392);
             this.sstripMain.Name = "sstripMain";
             this.sstripMain.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.sstripMain.Size = new System.Drawing.Size(898, 22);
+            this.sstripMain.Size = new System.Drawing.Size(898, 28);
             this.sstripMain.TabIndex = 2;
             this.sstripMain.Text = "statusStrip1";
             // 
             // toslblMessage
             // 
             this.toslblMessage.Name = "toslblMessage";
-            this.toslblMessage.Size = new System.Drawing.Size(0, 15);
+            this.toslblMessage.Size = new System.Drawing.Size(0, 21);
+            // 
+            // tosStatus
+            // 
+            this.tosStatus.Name = "tosStatus";
+            this.tosStatus.Size = new System.Drawing.Size(0, 21);
             // 
             // frmMain
             // 
@@ -168,6 +175,7 @@ namespace Payroll
         private System.Windows.Forms.ToolStripButton tosbtnEdit;
         private System.Windows.Forms.ToolStripButton tosbtnSave;
         private System.Windows.Forms.ToolStripButton tosbtnCalculate;
+        private System.Windows.Forms.ToolStripStatusLabel tosStatus;
     }
 }
 

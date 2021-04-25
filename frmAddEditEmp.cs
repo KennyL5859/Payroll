@@ -53,6 +53,55 @@ namespace Payroll
             }
         }
 
+        private void tosbtnSave_Click(object sender, EventArgs e)
+        {
+            if (isEdit)
+            {
+                UpdateEmployeeFields();
+            }
+            else
+            {
+
+            }
+        }
+
+        private void UpdateEmployeeFields()
+        {
+
+            EmpList[empIndex].firstName = mstFirstName.Text;
+            EmpList[empIndex].lastName = mstLastName.Text;
+            EmpList[empIndex].SSN = mstSSN.Text;
+            DateTime dob = DateTime.ParseExact(mstDob.Text, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            EmpList[empIndex].DOB = dob;
+            EmpList[empIndex].street = mstStreet.Text;
+            EmpList[empIndex].city = mstCity.Text;
+            EmpList[empIndex].zipCode = mstZipCode.Text;
+            EmpList[empIndex].state = mstState.Text;
+            EmpList[empIndex].salary = Convert.ToDouble(mstSalary.Text);
+            EmpList[empIndex].xFedWithhold = Convert.ToDouble(mstXFed.Text);
+            EmpList[empIndex].xStateWithold = Convert.ToDouble(mstXState.Text);
+            EmpList[empIndex].childDep = ddlChildDep.SelectedIndex;
+            EmpList[empIndex].otherDep = ddlOtherDep.SelectedIndex;
+            EmpList[empIndex].withHolding = ddlWithholding.SelectedIndex;
+
+            if (radSingle.Checked)
+                EmpList[empIndex].fStatus = "S";
+            else if (radHOH.Checked)
+                EmpList[empIndex].fStatus = "HOH";
+            else if (radMFS.Checked)
+                EmpList[empIndex].fStatus = "MFS";
+            else if (radMFJ.Checked)
+                EmpList[empIndex].fStatus = "MFJ";
+
+            DateTime start = dtpStart.Value.Date;
+            DateTime end = dtpEnd.Value.Date;
+            EmpList[empIndex].startDate = start;
+            EmpList[empIndex].endDate = end;
+
+            this.Close();
+
+        }
+
         private void FillInFields()
         {
             Employee sEmp = EmpList[empIndex];
@@ -82,9 +131,10 @@ namespace Payroll
 
             chkMultiple.Checked = sEmp.multipleJobs;
             dtpStart.Value = sEmp.startDate;
-            dtpEnd.Value = sEmp.endDate;
-            
+            dtpEnd.Value = sEmp.endDate;            
 
         }
+
+
     }
 }

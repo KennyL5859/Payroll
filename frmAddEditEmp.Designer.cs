@@ -116,6 +116,7 @@ namespace Payroll
             this.tosbtnSave.Name = "tosbtnSave";
             this.tosbtnSave.Size = new System.Drawing.Size(34, 28);
             this.tosbtnSave.Text = "Save ";
+            this.tosbtnSave.Click += new System.EventHandler(this.tosbtnSave_Click);
             // 
             // lblSSN
             // 
