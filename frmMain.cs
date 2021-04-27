@@ -83,6 +83,18 @@ namespace Payroll
             UpdateFile();
         }
 
+        private void tosbtnSave_Click(object sender, EventArgs e)
+        {
+            WriteToFile();
+            MessageBox.Show("Employee data have been saved");
+        }
+
+        private void dgvEmployeeData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            // save to text file when after user edits cell
+            WriteToFile();
+        }
+
         private void dgvEmployeeData_DoubleClick(object sender, EventArgs e)
         {
             tosbtnEdit_Click(sender, e);
