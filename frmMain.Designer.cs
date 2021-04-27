@@ -109,6 +109,7 @@ namespace Payroll
             this.tosbtnCalculate.Name = "tosbtnCalculate";
             this.tosbtnCalculate.Size = new System.Drawing.Size(28, 28);
             this.tosbtnCalculate.Text = "Calculate Taxes";
+            this.tosbtnCalculate.Click += new System.EventHandler(this.tosbtnCalculate_Click);
             // 
             // dgvEmployeeData
             // 

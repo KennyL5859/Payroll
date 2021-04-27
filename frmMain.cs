@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Payroll
 {
@@ -16,6 +17,7 @@ namespace Payroll
     {
         static string filePath = AppDomain.CurrentDomain.BaseDirectory;
         string EMPDATAPATH = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\EmpInfo.txt"));
+        string IRS_PERCENT = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\IRS_Percentage.xlsx"));
         List<Employee> EmpList = new List<Employee>();
         public frmMain()
         {
@@ -99,6 +101,45 @@ namespace Payroll
         {
             tosbtnEdit_Click(sender, e);
         }
+
+
+
+
+
+
+
+
+
+        private void tosbtnCalculate_Click(object sender, EventArgs e)
+        {
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWkbook = xlApp.Workbooks.Open(IRS_PERCENT);
+            Excel.Worksheet xlWkSheet;
+
+
+
+            xlWkbook.Close(true, null, null);
+
+            MessageBox.Show("okay");
+
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void ReadFile()
         {
