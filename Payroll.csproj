@@ -78,6 +78,7 @@
     <Compile Include="ITax.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WithholdTable.cs" />
     <EmbeddedResource Include="frmAddEditEmp.resx">
       <DependentUpon>frmAddEditEmp.cs</DependentUpon>
     </EmbeddedResource>

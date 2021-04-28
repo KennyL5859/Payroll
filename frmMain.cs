@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace Payroll
 {
@@ -19,6 +20,8 @@ namespace Payroll
         string EMPDATAPATH = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\EmpInfo.txt"));
         string IRS_PERCENT = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\IRS_Percentage.xlsx"));
         List<Employee> EmpList = new List<Employee>();
+        Dictionary<string, WithholdTable> WithHoldDic = new Dictionary<string, WithholdTable>();
+
         public frmMain()
         {
             InitializeComponent();
@@ -110,17 +113,59 @@ namespace Payroll
 
 
 
+
+
+
+
         private void tosbtnCalculate_Click(object sender, EventArgs e)
         {
-            Excel.Application xlApp = new Excel.Application();
-            Excel.Workbook xlWkbook = xlApp.Workbooks.Open(IRS_PERCENT);
-            Excel.Worksheet xlWkSheet;
 
+            List<string> fStatusList = new List<string> { "S", "S+", "MFJ", "MFJ+", "HOH", "HOH+" };
+
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWkbook = xlApp.Workbooks.Open(IRS_PERCENT, Type.Missing, Type.Missing,
+                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+
+
+            for (int i = 0; i < fStatusList.Count; i++)
+            {
+                try
+                {
+                    Excel.Worksheet xlWkSheet = (Excel.Worksheet)xlWkbook.Worksheets[fStatusList[i]];
+                    Excel.Range range = xlWkSheet.UsedRange;
+
+                    double[,] table = new double[8, 5];
+
+                    for (int r = 2; r <= 9; r++)
+                    {
+                        for (int c = 1; c <= 5; c++)
+                        {
+                            table[r - 2, c - 1] = Convert.ToDouble(range.Cells[r, c].Value2.ToString());
+                        }
+                    }
+
+                    WithholdTable newTable = new WithholdTable(table);
+                    WithHoldDic.Add(fStatusList[i], newTable);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred");
+                    xlWkbook.Close(true, null, null);
+                    xlApp.Quit();
+                    return;
+                }
+            }
 
 
             xlWkbook.Close(true, null, null);
+            xlApp.Quit();
 
-            MessageBox.Show("okay");
+
+            var x = WithHoldDic;
+
+            MessageBox.Show(WithHoldDic.Count.ToString());
 
             
         }
