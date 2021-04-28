@@ -37,9 +37,9 @@ namespace Payroll
             this.lblEmployee = new System.Windows.Forms.Label();
             this.lblPayPeriod = new System.Windows.Forms.Label();
             this.lblQuarter = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.ddlEmployees = new System.Windows.Forms.ComboBox();
+            this.ddlPayPeriod = new System.Windows.Forms.ComboBox();
+            this.ddlQuarter = new System.Windows.Forms.ComboBox();
             this.radWeekly = new System.Windows.Forms.RadioButton();
             this.radBiWeekly = new System.Windows.Forms.RadioButton();
             this.radMonthly = new System.Windows.Forms.RadioButton();
@@ -117,48 +117,47 @@ namespace Payroll
             this.lblQuarter.TabIndex = 3;
             this.lblQuarter.Text = "Quarter:";
             // 
-            // comboBox1
+            // ddlEmployees
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(129, 38);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(137, 24);
-            this.comboBox1.TabIndex = 4;
+            this.ddlEmployees.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlEmployees.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddlEmployees.FormattingEnabled = true;
+            this.ddlEmployees.Location = new System.Drawing.Point(129, 38);
+            this.ddlEmployees.Name = "ddlEmployees";
+            this.ddlEmployees.Size = new System.Drawing.Size(137, 24);
+            this.ddlEmployees.TabIndex = 4;
             // 
-            // comboBox2
+            // ddlPayPeriod
             // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(129, 76);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(40, 24);
-            this.comboBox2.TabIndex = 5;
+            this.ddlPayPeriod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlPayPeriod.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddlPayPeriod.FormattingEnabled = true;
+            this.ddlPayPeriod.Location = new System.Drawing.Point(129, 76);
+            this.ddlPayPeriod.Name = "ddlPayPeriod";
+            this.ddlPayPeriod.Size = new System.Drawing.Size(40, 24);
+            this.ddlPayPeriod.TabIndex = 5;
             // 
-            // comboBox3
+            // ddlQuarter
             // 
-            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(129, 114);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(40, 24);
-            this.comboBox3.TabIndex = 6;
+            this.ddlQuarter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlQuarter.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddlQuarter.FormattingEnabled = true;
+            this.ddlQuarter.Location = new System.Drawing.Point(129, 114);
+            this.ddlQuarter.Name = "ddlQuarter";
+            this.ddlQuarter.Size = new System.Drawing.Size(40, 24);
+            this.ddlQuarter.TabIndex = 6;
             // 
             // radWeekly
             // 
             this.radWeekly.AutoSize = true;
-            this.radWeekly.Checked = true;
             this.radWeekly.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.radWeekly.Location = new System.Drawing.Point(383, 75);
             this.radWeekly.Name = "radWeekly";
             this.radWeekly.Size = new System.Drawing.Size(72, 20);
             this.radWeekly.TabIndex = 7;
-            this.radWeekly.TabStop = true;
             this.radWeekly.Text = "Weekly";
             this.radWeekly.UseVisualStyleBackColor = true;
+            this.radWeekly.CheckedChanged += new System.EventHandler(this.radMonthly_CheckedChanged);
             // 
             // radBiWeekly
             // 
@@ -170,17 +169,21 @@ namespace Payroll
             this.radBiWeekly.TabIndex = 8;
             this.radBiWeekly.Text = "Bi-Weekly";
             this.radBiWeekly.UseVisualStyleBackColor = true;
+            this.radBiWeekly.CheckedChanged += new System.EventHandler(this.radMonthly_CheckedChanged);
             // 
             // radMonthly
             // 
             this.radMonthly.AutoSize = true;
+            this.radMonthly.Checked = true;
             this.radMonthly.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.radMonthly.Location = new System.Drawing.Point(454, 119);
             this.radMonthly.Name = "radMonthly";
             this.radMonthly.Size = new System.Drawing.Size(72, 20);
             this.radMonthly.TabIndex = 9;
+            this.radMonthly.TabStop = true;
             this.radMonthly.Text = "Monthly";
             this.radMonthly.UseVisualStyleBackColor = true;
+            this.radMonthly.CheckedChanged += new System.EventHandler(this.radMonthly_CheckedChanged);
             // 
             // lblPayFreq
             // 
@@ -212,9 +215,9 @@ namespace Payroll
             this.Controls.Add(this.radMonthly);
             this.Controls.Add(this.radBiWeekly);
             this.Controls.Add(this.radWeekly);
-            this.Controls.Add(this.comboBox3);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.ddlQuarter);
+            this.Controls.Add(this.ddlPayPeriod);
+            this.Controls.Add(this.ddlEmployees);
             this.Controls.Add(this.lblQuarter);
             this.Controls.Add(this.lblPayPeriod);
             this.Controls.Add(this.lblEmployee);
@@ -237,9 +240,9 @@ namespace Payroll
         private System.Windows.Forms.Label lblEmployee;
         private System.Windows.Forms.Label lblPayPeriod;
         private System.Windows.Forms.Label lblQuarter;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox ddlEmployees;
+        private System.Windows.Forms.ComboBox ddlPayPeriod;
+        private System.Windows.Forms.ComboBox ddlQuarter;
         private System.Windows.Forms.RadioButton radWeekly;
         private System.Windows.Forms.RadioButton radBiWeekly;
         private System.Windows.Forms.RadioButton radMonthly;

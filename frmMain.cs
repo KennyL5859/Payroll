@@ -116,6 +116,7 @@ namespace Payroll
         private void SetWithholdDic()
         {
             List<string> fStatusList = new List<string> { "S", "S+", "MFJ", "MFJ+", "HOH", "HOH+" };
+            WithHoldDic.Clear();
 
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWkbook = xlApp.Workbooks.Open(IRS_PERCENT, Type.Missing, Type.Missing,

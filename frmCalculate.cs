@@ -29,7 +29,50 @@ namespace Payroll
 
         private void frmCalculate_Load(object sender, EventArgs e)
         {
+            AddNameToDDL();
+            SetNumPayPeriods();                        
+        }
 
+        private void SetNumPayPeriods()
+        {
+            ddlPayPeriod.Items.Clear();
+
+            if (radWeekly.Checked)
+            {
+                for (int i = 1; i <= 52; i++)
+                {
+                    ddlPayPeriod.Items.Add(i);
+                }
+            }
+            else if (radBiWeekly.Checked)
+            {
+                for (int i = 1; i <= 26; i++)
+                {
+                    ddlPayPeriod.Items.Add(i);
+                }
+            }
+            else if (radMonthly.Checked)
+            {
+                for (int i = 1; i <= 12; i++)
+                {
+                    ddlPayPeriod.Items.Add(i);
+                }
+            }
+        }
+
+
+        private void AddNameToDDL()
+        {
+            for (int i = 0; i < EmpList.Count; i++)
+            {
+                string name = EmpList[i].firstName + " " + EmpList[i].lastName;
+                ddlEmployees.Items.Add(name);
+            }
+        }
+
+        private void radMonthly_CheckedChanged(object sender, EventArgs e)
+        {
+            SetNumPayPeriods();
         }
     }
 }
