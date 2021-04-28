@@ -105,28 +105,22 @@ namespace Payroll
             tosbtnEdit_Click(sender, e);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         private void tosbtnCalculate_Click(object sender, EventArgs e)
         {
+            SetWithholdDic();
+            frmCalculate calcForm = new frmCalculate(EmpList, WithHoldDic);
+            calcForm.ShowDialog();           
+        }
 
+
+        private void SetWithholdDic()
+        {
             List<string> fStatusList = new List<string> { "S", "S+", "MFJ", "MFJ+", "HOH", "HOH+" };
 
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWkbook = xlApp.Workbooks.Open(IRS_PERCENT, Type.Missing, Type.Missing,
                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-
 
             for (int i = 0; i < fStatusList.Count; i++)
             {
@@ -147,7 +141,6 @@ namespace Payroll
 
                     WithholdTable newTable = new WithholdTable(table);
                     WithHoldDic.Add(fStatusList[i], newTable);
-
                 }
                 catch (Exception ex)
                 {
@@ -158,32 +151,9 @@ namespace Payroll
                 }
             }
 
-
             xlWkbook.Close(true, null, null);
             xlApp.Quit();
-
-
-            var x = WithHoldDic;
-
-            MessageBox.Show(WithHoldDic.Count.ToString());
-
-            
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         private void ReadFile()

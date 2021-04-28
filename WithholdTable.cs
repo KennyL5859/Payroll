@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Payroll
 {
-    class WithholdTable
+    public class WithholdTable
     {
         public double[,] rates { get; set; }  
 

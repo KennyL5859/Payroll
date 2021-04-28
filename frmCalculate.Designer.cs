@@ -33,6 +33,7 @@ namespace Payroll
             this.tosMain = new System.Windows.Forms.ToolStrip();
             this.tosbtnCalculate = new System.Windows.Forms.ToolStripButton();
             this.tosbtnExcel = new System.Windows.Forms.ToolStripButton();
+            this.tosddbtnPDF = new System.Windows.Forms.ToolStripDropDownButton();
             this.lblEmployee = new System.Windows.Forms.Label();
             this.lblPayPeriod = new System.Windows.Forms.Label();
             this.lblQuarter = new System.Windows.Forms.Label();
@@ -44,7 +45,6 @@ namespace Payroll
             this.radMonthly = new System.Windows.Forms.RadioButton();
             this.lblPayFreq = new System.Windows.Forms.Label();
             this.lstResults = new System.Windows.Forms.ListBox();
-            this.tosddbtnPDF = new System.Windows.Forms.ToolStripDropDownButton();
             this.tosMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,6 +77,15 @@ namespace Payroll
             this.tosbtnExcel.Name = "tosbtnExcel";
             this.tosbtnExcel.Size = new System.Drawing.Size(23, 22);
             this.tosbtnExcel.Text = "Export to Excel";
+            // 
+            // tosddbtnPDF
+            // 
+            this.tosddbtnPDF.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tosddbtnPDF.Image = ((System.Drawing.Image)(resources.GetObject("tosddbtnPDF.Image")));
+            this.tosddbtnPDF.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tosddbtnPDF.Name = "tosddbtnPDF";
+            this.tosddbtnPDF.Size = new System.Drawing.Size(29, 22);
+            this.tosddbtnPDF.Text = "toolStripDropDownButton1";
             // 
             // lblEmployee
             // 
@@ -193,15 +202,6 @@ namespace Payroll
             this.lstResults.Size = new System.Drawing.Size(493, 228);
             this.lstResults.TabIndex = 11;
             // 
-            // tosddbtnPDF
-            // 
-            this.tosddbtnPDF.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tosddbtnPDF.Image = ((System.Drawing.Image)(resources.GetObject("tosddbtnPDF.Image")));
-            this.tosddbtnPDF.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tosddbtnPDF.Name = "tosddbtnPDF";
-            this.tosddbtnPDF.Size = new System.Drawing.Size(29, 22);
-            this.tosddbtnPDF.Text = "toolStripDropDownButton1";
-            // 
             // frmCalculate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -221,6 +221,7 @@ namespace Payroll
             this.Controls.Add(this.tosMain);
             this.Name = "frmCalculate";
             this.Text = "frmCalculate";
+            this.Load += new System.EventHandler(this.frmCalculate_Load);
             this.tosMain.ResumeLayout(false);
             this.tosMain.PerformLayout();
             this.ResumeLayout(false);
