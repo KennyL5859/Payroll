@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Payroll
 {
-    public class Employee : ITax
+    public class Employee
     {
         public string firstName { get; set; }
         public string lastName { get; set; }
@@ -26,6 +26,8 @@ namespace Payroll
         public double salary { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
+
+        private const double SSNWageGap = 142800;
 
 
         public Employee(string fName, string lName, string ssn, DateTime dob, string fStatus,
@@ -58,6 +60,29 @@ namespace Payroll
             double salary = this.salary / periods;
             return salary;
         }
+
+        public double CalcSSNTax(int periods)
+        {
+            double wage = 0;
+            double ssTax = 0;
+
+            if (this.salary >= SSNWageGap)
+                wage = SSNWageGap;
+            else
+                wage = this.salary;
+
+            double tax = wage * 0.062 / periods;
+            ssTax = Math.Round(tax, 2);
+            return ssTax;           
+
+        }
+
+        public double CalcMedTax(int periods)
+        {
+
+        }
+
+
 
         public string[] GetEmpStringAttributes()
         {

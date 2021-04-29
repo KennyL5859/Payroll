@@ -33,6 +33,34 @@ namespace Payroll
             SetNumPayPeriods();                        
         }
 
+        private void tosbtnCalculate_Click(object sender, EventArgs e)
+        {
+            ClearDDLColors();
+
+            if (!CheckDDL(ddlEmployees, "You must select an employee"))
+                return;
+
+            if (!CheckDDL(ddlPayPeriod, "You must select a pay period"))
+                return;
+
+
+  
+        }
+
+        private bool CheckDDL(ComboBox ddl, string msg)
+        {
+            if (ddl.SelectedIndex == -1)
+            {
+                MessageBox.Show(msg);
+                ddl.BackColor = Color.LightYellow;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         private void SetNumPayPeriods()
         {
             ddlPayPeriod.Items.Clear();
@@ -74,5 +102,13 @@ namespace Payroll
         {
             SetNumPayPeriods();
         }
+
+        private void ClearDDLColors()
+        {
+            ddlEmployees.BackColor = Color.White;
+            ddlPayPeriod.BackColor = Color.White;
+            ddlQuarter.BackColor = Color.White;
+        }
+
     }
 }

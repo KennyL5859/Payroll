@@ -68,6 +68,7 @@ namespace Payroll
             this.tosbtnCalculate.Name = "tosbtnCalculate";
             this.tosbtnCalculate.Size = new System.Drawing.Size(23, 22);
             this.tosbtnCalculate.Text = "Calculate";
+            this.tosbtnCalculate.Click += new System.EventHandler(this.tosbtnCalculate_Click);
             // 
             // tosbtnExcel
             // 
@@ -124,7 +125,7 @@ namespace Payroll
             this.ddlEmployees.FormattingEnabled = true;
             this.ddlEmployees.Location = new System.Drawing.Point(129, 38);
             this.ddlEmployees.Name = "ddlEmployees";
-            this.ddlEmployees.Size = new System.Drawing.Size(137, 24);
+            this.ddlEmployees.Size = new System.Drawing.Size(149, 24);
             this.ddlEmployees.TabIndex = 4;
             // 
             // ddlPayPeriod
