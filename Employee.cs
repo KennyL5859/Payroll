@@ -28,6 +28,9 @@ namespace Payroll
         public DateTime endDate { get; set; }
 
         private const double SSNWageGap = 142800;
+        private const double MedRegRate = 0.0145;
+        private const double MedAddRate = 0.0235;
+        private const double StateRate = 0.0495;
 
 
         public Employee(string fName, string lName, string ssn, DateTime dob, string fStatus,
@@ -79,7 +82,41 @@ namespace Payroll
 
         public double CalcMedTax(int periods)
         {
+            double regularRate = this.salary;
+            double excessRate = 0;
+            double medTax = 0;
 
+            // this separates the regular rates and the additional medicare rates
+            if ((this.fStatus == "S" || this.fStatus == "HOH") && this.salary > 200000)
+            {
+                regularRate = 200000;
+                excessRate = this.salary - 200000;
+            }
+            else if (this.fStatus == "MFJ" && this.salary > 250000)
+            {
+                regularRate = 250000;
+                excessRate = this.salary - 250000;
+            }
+            else if (this.fStatus == "MFS" && this.salary > 125000)
+            {
+                regularRate = 125000;
+                excessRate = this.salary - 125000;
+            }
+
+            double tax = ((regularRate * MedRegRate) + (excessRate * MedAddRate)) / periods;
+            medTax = Math.Round(tax, 2);
+
+            return medTax;       
+        }
+
+        public double CalcStateTax(int periods)
+        {
+            double stateTax = 0;
+            double deductions = ((this.childDep * 2375) + (this.otherDep * 1000)) / periods;
+            double tax = ((this.salary - deductions) * 0.0495) / periods;
+            stateTax = Math.Round(tax, 2);
+
+            return stateTax;
         }
 
 

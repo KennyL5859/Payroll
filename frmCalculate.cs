@@ -43,7 +43,7 @@ namespace Payroll
             if (!CheckDDL(ddlPayPeriod, "You must select a pay period"))
                 return;
 
-
+            MessageBox.Show(EmpList[0].CalcStateTax(12).ToString());
   
         }
 
