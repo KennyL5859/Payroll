@@ -122,10 +122,12 @@ namespace Payroll
         {
             double salary = this.salary;
             double multipleJob;
+            string status = "";
 
             if (this.multipleJobs)
             {
                 multipleJob = 0;
+                status = this.fStatus + "+";
             }                
             else
             {
@@ -133,17 +135,32 @@ namespace Payroll
                     multipleJob = 12900;
                 else
                     multipleJob = 8600;
+
+                status = this.fStatus;
             }
 
             double adjAnnualWage = salary - multipleJob;
-          
-            //
+            WithholdTable WT = withDic[status];
+            var table = WT.rates;
+            int numRows = table.GetLength(0);
+            int selectRows = 0;
 
-            //
+            for (int i = 0; i < numRows; i++)
+            {  
+                if (adjAnnualWage >= table[i, 0] && adjAnnualWage <= table[i, 1])
+                {
+                    selectRows = i;
+                }
+            }
 
-            
-            return adjAnnualWage;
-
+            double rowA = table[selectRows, 0];
+            double tentative = table[selectRows, 2];
+            double percentage = table[selectRows, 3];
+            double adjAdj = adjAnnualWage - rowA;
+            double tentative2 = adjAdj * percentage;
+            double tax = (tentative + tentative2) / periods;
+            double realTax = Math.Round(tax, 2);
+            return realTax;
         }
 
 

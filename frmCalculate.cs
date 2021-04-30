@@ -112,7 +112,7 @@ namespace Payroll
 
         private void tosbtnExcel_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show(EmpList[0].CalcFedTax(12, WithHoldDic).ToString());
         }
     }
 }
