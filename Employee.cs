@@ -113,10 +113,37 @@ namespace Payroll
         {
             double stateTax = 0;
             double deductions = ((this.childDep * 2375) + (this.otherDep * 1000)) / periods;
-            double tax = ((this.salary - deductions) * 0.0495) / periods;
+            double tax = ((this.salary - deductions) * 0.0495) / periods + this.xStateWithold;
             stateTax = Math.Round(tax, 2);
-
             return stateTax;
+        }
+
+        public double CalcFedTax(int periods, Dictionary<string, WithholdTable> withDic)
+        {
+            double salary = this.salary;
+            double multipleJob;
+
+            if (this.multipleJobs)
+            {
+                multipleJob = 0;
+            }                
+            else
+            {
+                if (this.fStatus == "MFJ")
+                    multipleJob = 12900;
+                else
+                    multipleJob = 8600;
+            }
+
+            double adjAnnualWage = salary - multipleJob;
+          
+            //
+
+            //
+
+            
+            return adjAnnualWage;
+
         }
 
 

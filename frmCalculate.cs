@@ -110,5 +110,9 @@ namespace Payroll
             ddlQuarter.BackColor = Color.White;
         }
 
+        private void tosbtnExcel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
