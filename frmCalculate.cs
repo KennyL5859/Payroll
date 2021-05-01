@@ -41,11 +41,51 @@ namespace Payroll
                 return;
 
             if (!CheckDDL(ddlPayPeriod, "You must select a pay period"))
-                return;
+                return;           
 
-            MessageBox.Show(EmpList[0].CalcStateTax(12).ToString());
-  
+
+            AddResultsToListbox();
+
         }
+
+
+        private void AddResultsToListbox()
+        {
+            int empSelect = ddlEmployees.SelectedIndex;
+            int numPeriods = GetNumPayPeriods();
+            int period = Convert.ToInt32(ddlPayPeriod.SelectedIndex) + 1;
+            Employee emp = EmpList[empSelect];
+            string fullName = emp.firstName + " " + emp.lastName;
+            double fica = emp.CalcFedTax(numPeriods, WithHoldDic);
+            double state = emp.CalcStateTax(numPeriods);
+            double mediTax = emp.CalcMedTax(numPeriods);
+            double ssnTax = emp.CalcSSNTax(numPeriods);
+            double total = emp.CalcTotalTax(numPeriods, WithHoldDic);
+            double netPay = (emp.salary / numPeriods) - total;
+
+
+            lstResults.Items.Add(fullName);
+            lstResults.Items.Add("Pay Period:  " + period);
+            lstResults.Items.Add("");
+            lstResults.Items.Add("Current".PadLeft(30) + "YTD".PadLeft(20));
+            lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
+
+            lstResults.Items.Add("FICA" + fica.ToString().PadLeft(26) + 
+                fica.ToString().PadLeft(20));
+            lstResults.Items.Add("Medi" + mediTax.ToString().PadLeft(26) +
+                mediTax.ToString().PadLeft(20));
+            lstResults.Items.Add("Fed" + fica.ToString().PadLeft(27) +
+                fica.ToString().PadLeft(20));
+            lstResults.Items.Add("State" + state.ToString().PadLeft(25) +
+                state.ToString().PadLeft(20));
+            lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
+            lstResults.Items.Add("Total" + total.ToString().PadLeft(25) +
+                total.ToString().PadLeft(20));
+            lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
+            lstResults.Items.Add("Net Pay" + netPay.ToString().PadLeft(23) +
+                netPay.ToString().PadLeft(20));
+        }
+        
 
         private bool CheckDDL(ComboBox ddl, string msg)
         {
@@ -59,6 +99,20 @@ namespace Payroll
             {
                 return true;
             }
+        }
+
+        private int GetNumPayPeriods()
+        {
+            int numPeriods = 0;
+
+            if (radWeekly.Checked)
+                numPeriods = 52;
+            else if (radBiWeekly.Checked)
+                numPeriods = 26;
+            else if (radMonthly.Checked)
+                numPeriods = 12;
+
+            return numPeriods;
         }
 
         private void SetNumPayPeriods()
@@ -87,7 +141,6 @@ namespace Payroll
                 }
             }
         }
-
 
         private void AddNameToDDL()
         {

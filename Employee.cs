@@ -163,7 +163,15 @@ namespace Payroll
             return realTax;
         }
 
-
+        public double CalcTotalTax(int periods, Dictionary<string, WithholdTable> withDic)
+        {            
+            double fed = CalcFedTax(periods, withDic);
+            double state = CalcStateTax(periods);
+            double fica = CalcSSNTax(periods);
+            double mediTax = CalcMedTax(periods);
+            double totalTax = fed + state + fica + mediTax;
+            return totalTax;
+        }
 
         public string[] GetEmpStringAttributes()
         {

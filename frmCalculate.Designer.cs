@@ -78,7 +78,7 @@ namespace Payroll
             this.tosbtnExcel.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnExcel.Image")));
             this.tosbtnExcel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnExcel.Name = "tosbtnExcel";
-            this.tosbtnExcel.Size = new System.Drawing.Size(34, 28);
+            this.tosbtnExcel.Size = new System.Drawing.Size(34, 33);
             this.tosbtnExcel.Text = "Export to Excel";
             this.tosbtnExcel.Click += new System.EventHandler(this.tosbtnExcel_Click);
             // 
@@ -88,7 +88,7 @@ namespace Payroll
             this.tosddbtnPDF.Image = ((System.Drawing.Image)(resources.GetObject("tosddbtnPDF.Image")));
             this.tosddbtnPDF.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosddbtnPDF.Name = "tosddbtnPDF";
-            this.tosddbtnPDF.Size = new System.Drawing.Size(42, 28);
+            this.tosddbtnPDF.Size = new System.Drawing.Size(42, 33);
             this.tosddbtnPDF.Text = "toolStripDropDownButton1";
             // 
             // lblEmployee
@@ -211,20 +211,20 @@ namespace Payroll
             // 
             // lstResults
             // 
-            this.lstResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstResults.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstResults.FormattingEnabled = true;
-            this.lstResults.ItemHeight = 25;
+            this.lstResults.ItemHeight = 28;
             this.lstResults.Location = new System.Drawing.Point(50, 248);
             this.lstResults.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lstResults.Name = "lstResults";
-            this.lstResults.Size = new System.Drawing.Size(738, 329);
+            this.lstResults.Size = new System.Drawing.Size(738, 424);
             this.lstResults.TabIndex = 11;
             // 
             // frmCalculate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(836, 645);
+            this.ClientSize = new System.Drawing.Size(836, 703);
             this.Controls.Add(this.lstResults);
             this.Controls.Add(this.lblPayFreq);
             this.Controls.Add(this.radMonthly);

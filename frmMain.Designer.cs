@@ -56,8 +56,8 @@ namespace Payroll
             this.tosbtnCalculate});
             this.tosMain.Location = new System.Drawing.Point(0, 0);
             this.tosMain.Name = "tosMain";
-            this.tosMain.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.tosMain.Size = new System.Drawing.Size(599, 31);
+            this.tosMain.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.tosMain.Size = new System.Drawing.Size(898, 38);
             this.tosMain.TabIndex = 0;
             this.tosMain.Text = "toolStrip1";
             // 
@@ -67,7 +67,7 @@ namespace Payroll
             this.tosbtnAdd.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnAdd.Image")));
             this.tosbtnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnAdd.Name = "tosbtnAdd";
-            this.tosbtnAdd.Size = new System.Drawing.Size(28, 28);
+            this.tosbtnAdd.Size = new System.Drawing.Size(34, 33);
             this.tosbtnAdd.Text = "toolStripButton1";
             this.tosbtnAdd.Click += new System.EventHandler(this.tosbtnAdd_Click);
             // 
@@ -77,7 +77,7 @@ namespace Payroll
             this.tosbtnDelete.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnDelete.Image")));
             this.tosbtnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnDelete.Name = "tosbtnDelete";
-            this.tosbtnDelete.Size = new System.Drawing.Size(28, 28);
+            this.tosbtnDelete.Size = new System.Drawing.Size(34, 33);
             this.tosbtnDelete.Text = "Delete";
             this.tosbtnDelete.Click += new System.EventHandler(this.tosbtnDelete_Click);
             // 
@@ -87,7 +87,7 @@ namespace Payroll
             this.tosbtnEdit.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnEdit.Image")));
             this.tosbtnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnEdit.Name = "tosbtnEdit";
-            this.tosbtnEdit.Size = new System.Drawing.Size(28, 28);
+            this.tosbtnEdit.Size = new System.Drawing.Size(34, 33);
             this.tosbtnEdit.Text = "Edit Employee";
             this.tosbtnEdit.Click += new System.EventHandler(this.tosbtnEdit_Click);
             // 
@@ -97,7 +97,7 @@ namespace Payroll
             this.tosbtnSave.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnSave.Image")));
             this.tosbtnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnSave.Name = "tosbtnSave";
-            this.tosbtnSave.Size = new System.Drawing.Size(28, 28);
+            this.tosbtnSave.Size = new System.Drawing.Size(34, 33);
             this.tosbtnSave.Text = "Save";
             this.tosbtnSave.Click += new System.EventHandler(this.tosbtnSave_Click);
             // 
@@ -107,18 +107,22 @@ namespace Payroll
             this.tosbtnCalculate.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnCalculate.Image")));
             this.tosbtnCalculate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnCalculate.Name = "tosbtnCalculate";
-            this.tosbtnCalculate.Size = new System.Drawing.Size(28, 28);
+            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 33);
             this.tosbtnCalculate.Text = "Calculate Taxes";
             this.tosbtnCalculate.Click += new System.EventHandler(this.tosbtnCalculate_Click);
             // 
             // dgvEmployeeData
             // 
+            this.dgvEmployeeData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvEmployeeData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEmployeeData.Location = new System.Drawing.Point(19, 44);
+            this.dgvEmployeeData.Location = new System.Drawing.Point(28, 68);
+            this.dgvEmployeeData.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgvEmployeeData.Name = "dgvEmployeeData";
             this.dgvEmployeeData.RowHeadersWidth = 62;
             this.dgvEmployeeData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvEmployeeData.Size = new System.Drawing.Size(560, 196);
+            this.dgvEmployeeData.Size = new System.Drawing.Size(840, 302);
             this.dgvEmployeeData.TabIndex = 1;
             this.dgvEmployeeData.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEmployeeData_CellEndEdit);
             this.dgvEmployeeData.DoubleClick += new System.EventHandler(this.dgvEmployeeData_DoubleClick);
@@ -129,31 +133,31 @@ namespace Payroll
             this.sstripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toslblMessage,
             this.tosStatus});
-            this.sstripMain.Location = new System.Drawing.Point(0, 251);
+            this.sstripMain.Location = new System.Drawing.Point(0, 398);
             this.sstripMain.Name = "sstripMain";
-            this.sstripMain.Size = new System.Drawing.Size(599, 22);
+            this.sstripMain.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+            this.sstripMain.Size = new System.Drawing.Size(898, 22);
             this.sstripMain.TabIndex = 2;
             this.sstripMain.Text = "statusStrip1";
             // 
             // toslblMessage
             // 
             this.toslblMessage.Name = "toslblMessage";
-            this.toslblMessage.Size = new System.Drawing.Size(0, 17);
+            this.toslblMessage.Size = new System.Drawing.Size(0, 15);
             // 
             // tosStatus
             // 
             this.tosStatus.Name = "tosStatus";
-            this.tosStatus.Size = new System.Drawing.Size(0, 17);
+            this.tosStatus.Size = new System.Drawing.Size(0, 15);
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(599, 273);
+            this.ClientSize = new System.Drawing.Size(898, 420);
             this.Controls.Add(this.sstripMain);
             this.Controls.Add(this.dgvEmployeeData);
             this.Controls.Add(this.tosMain);
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmMain";
             this.Text = "Main Menu";
             this.Load += new System.EventHandler(this.frmMain_Load);
