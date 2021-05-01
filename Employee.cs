@@ -173,6 +173,164 @@ namespace Payroll
             return totalTax;
         }
 
+        public Dictionary<int, double> GetPeriodsWorked(int periods)
+        {
+            Dictionary<int, double> periodsWorked = new Dictionary<int, double>();
+
+            if (periods == 12)
+                periodsWorked = GetMonthsWorked();
+            else
+                periodsWorked = GetWeeksWorked(periods);
+
+            return periodsWorked;
+        }
+
+        public Dictionary<int, double> GetWeeksWorked(int periods)
+        {
+            int numDays = 365 / periods;
+            Dictionary<int, double> weeksWorked = new Dictionary<int, double>();
+            int curYear = DateTime.Now.Year;
+            DateTime begin = new DateTime(curYear, 1, 1);
+            DateTime end = new DateTime(curYear, 12, 31);
+            int startMonth = this.startDate.Month;
+            int startDate = this.startDate.Day;
+            int endMonth = this.endDate.Month;
+            int endDate = this.endDate.Day;
+
+            if (this.startDate < begin && this.endDate > end)
+            {
+                for (int i = 1; i <= periods; i++)
+                {
+                    weeksWorked.Add(i, 1);
+                }
+            }
+            else
+            {
+                int bDaysPassed = (this.startDate - begin).Days + 1;
+                int beginPeriods = bDaysPassed / numDays + 1;
+                int beginExcessDays = bDaysPassed % numDays;
+
+                double beginPercentPeriod = 1;
+
+                if (beginExcessDays != 0)
+                    beginPercentPeriod = Math.Round((double)(numDays - beginExcessDays) / numDays, 2);
+
+                int eDaysPassed = (end - this.endDate).Days;
+                int periodsLeft = eDaysPassed / numDays;
+                int lastPeriod = periods - periodsLeft;
+
+                for (int i = 1; i <= periods; i++)
+                {
+                    if (i < beginPeriods)
+                        weeksWorked.Add(i, 0);
+                    else if (i == beginPeriods)
+                        weeksWorked.Add(i, beginPercentPeriod);
+                    else if (i > lastPeriod)
+                        weeksWorked.Add(i, 0);
+                    else
+                        weeksWorked.Add(i, 1);
+                }
+            }
+            return weeksWorked;
+        }
+
+        public Dictionary<int, double> GetBiWeeksWorked()
+        {
+            Dictionary<int, double> biWorked = new Dictionary<int, double>();
+            int curYear = DateTime.Now.Year;
+            DateTime begin = new DateTime(curYear, 1, 1);
+            DateTime end = new DateTime(curYear, 12, 31);
+            int startMonth = this.startDate.Month;
+            int startDate = this.startDate.Day;
+            int endMonth = this.endDate.Month;
+            int endDate = this.endDate.Day;
+
+            if (this.startDate < begin && this.endDate > end)
+            {
+                for (int i = 1; i <= 26; i++)
+                {
+                    biWorked.Add(i, 1);
+                }
+            }
+            else
+            {
+                int bDaysPassed = (this.startDate - begin).Days + 1;
+                int beginPeriods = bDaysPassed / 14 + 1;
+                int beginExcessDays = bDaysPassed % 14;
+
+                double beginPercentPeriod = 1;
+
+                if (beginExcessDays != 0)
+                    beginPercentPeriod = Math.Round((double)(14 - beginExcessDays) / 14, 2);
+
+                int eDaysPassed = (end - this.endDate).Days;
+                int periodsLeft = eDaysPassed / 14;
+                int lastPeriod = 26 - periodsLeft;
+
+                for (int i = 1; i <= 26; i++)
+                {
+                    if (i < beginPeriods)
+                        biWorked.Add(i, 0);
+                    else if (i == beginPeriods)
+                        biWorked.Add(i, beginPercentPeriod);
+                    else if (i > lastPeriod)
+                        biWorked.Add(i, 0);
+                    else
+                        biWorked.Add(i, 1);
+                }
+            }
+            return biWorked;
+        }
+
+        public Dictionary<int, double> GetMonthsWorked()
+        {
+            Dictionary<int, double> monthsWorked = new Dictionary<int, double>();
+            int curYear = DateTime.Now.Year;
+            DateTime begin = new DateTime(curYear, 1, 1);
+            DateTime end = new DateTime(curYear, 12, 31);
+            int startMonth = this.startDate.Month;
+            int startDate = this.startDate.Day;
+            int endMonth = this.endDate.Month;
+            int endDate = this.endDate.Day;  
+
+            if (this.startDate < begin && this.endDate > end)
+            {
+                for (int i = 1; i <= 12; i++)
+                {
+                    monthsWorked.Add(i, 1);
+                }
+            }
+            else
+            {
+                if (this.endDate > end)
+                {
+                    endMonth = 12;
+                    endDate = 31;
+                }
+
+                int beginNumDays = DateTime.DaysInMonth(curYear, startMonth);
+                double beginPercentWorked = Math.Round((double)(beginNumDays - startDate + 1) / beginNumDays, 2);
+
+                int endNumDays = DateTime.DaysInMonth(curYear, endMonth);
+                double endPercentWorked = Math.Round((double) endDate / endNumDays, 2);
+
+                for (int i = 1; i <= 12; i++)
+                {
+                    if (i < startMonth)
+                        monthsWorked.Add(i, 0);
+                    else if (i == startMonth)
+                        monthsWorked.Add(i, beginPercentWorked);
+                    else if (i > endMonth)
+                        monthsWorked.Add(i, 0);
+                    else if (i == endMonth)
+                        monthsWorked.Add(i, endPercentWorked);
+                    else
+                        monthsWorked.Add(i, 1);
+                }
+            }
+            return monthsWorked;
+        }
+
         public string[] GetEmpStringAttributes()
         {
             string[] EmpAttributes = new string[18];
@@ -194,7 +352,7 @@ namespace Payroll
             EmpAttributes[14] = this.zipCode;
             EmpAttributes[15] = this.salary.ToString();
             string start = this.startDate.ToString("MM/dd/yyyy");
-            string end = this.startDate.ToString("MM/dd/yyyy");
+            string end = this.endDate.ToString("MM/dd/yyyy");
             EmpAttributes[16] = start;
             EmpAttributes[17] = end;
             return EmpAttributes;

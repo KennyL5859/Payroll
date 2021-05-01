@@ -165,7 +165,11 @@ namespace Payroll
 
         private void tosbtnExcel_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(EmpList[0].CalcFedTax(12, WithHoldDic).ToString());
+            var pWorked = EmpList[0].GetMonthsWorked();
+
+            MessageBox.Show("hi");
+
+
         }
     }
 }

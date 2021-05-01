@@ -268,6 +268,11 @@ namespace Payroll
             return newEmp;
         }
 
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            var x = EmpList[0].GetWeeksWorked(52);
 
+            MessageBox.Show("HI");
+        }
     }
 }
