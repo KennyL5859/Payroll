@@ -64,8 +64,9 @@ namespace Payroll
             return salary;
         }
 
-        public double CalcSSNTax(int periods)
+        public double CalcSSNTax(int periods, int selectedPeriod)
         {
+            Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double wage = 0;
             double ssTax = 0;
 
@@ -74,14 +75,15 @@ namespace Payroll
             else
                 wage = this.salary;
 
-            double tax = wage * 0.062 / periods;
+            double tax = wage * 0.062 / periods * periodsRate[selectedPeriod];
             ssTax = Math.Round(tax, 2);
             return ssTax;           
 
         }
 
-        public double CalcMedTax(int periods)
+        public double CalcMedTax(int periods, int selectedPeriod)
         {
+            Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double regularRate = this.salary;
             double excessRate = 0;
             double medTax = 0;
@@ -103,24 +105,29 @@ namespace Payroll
                 excessRate = this.salary - 125000;
             }
 
-            double tax = ((regularRate * MedRegRate) + (excessRate * MedAddRate)) / periods;
+            double tax = (((regularRate * MedRegRate) + (excessRate * MedAddRate)) / periods) * periodsRate[selectedPeriod];
             medTax = Math.Round(tax, 2);
-
             return medTax;       
         }
 
-        public double CalcStateTax(int periods)
+        public double CalcStateTax(int periods, int selectedPeriod)
         {
+            Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double stateTax = 0;
             double deductions = ((this.childDep * 2375) + (this.otherDep * 1000)) / periods;
-            double tax = ((this.salary - deductions) * 0.0495) / periods + this.xStateWithold;
+            double perPeriodSalary = this.salary / periods * periodsRate[selectedPeriod];
+            double tax = (perPeriodSalary - deductions) * 0.0495 + this.xStateWithold;
             stateTax = Math.Round(tax, 2);
             return stateTax;
         }
 
-        public double CalcFedTax(int periods, Dictionary<string, WithholdTable> withDic)
+        public double CalcFedTax(int periods, Dictionary<string, WithholdTable> withDic, 
+            int selectPeriod)
         {
-            double salary = this.salary;
+
+            Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
+            double periodSalary = this.salary / periods;
+            double salary = periodSalary * periodsRate[selectPeriod] * periods;
             double multipleJob;
             string status = "";
 
@@ -159,16 +166,84 @@ namespace Payroll
             double adjAdj = adjAnnualWage - rowA;
             double tentative2 = adjAdj * percentage;
             double tax = (tentative + tentative2) / periods;
-            double realTax = Math.Round(tax, 2);
+            double realTax = Math.Round(tax, 2) + this.xFedWithhold;
             return realTax;
         }
 
-        public double CalcTotalTax(int periods, Dictionary<string, WithholdTable> withDic)
+        public double CalcFedTaxCulmulative(int period, Dictionary<string, WithholdTable> withDic,
+            int selectedPeriod)
+        {
+            double culmuFedTax = 0;
+
+            for (int i = 1; i <= selectedPeriod; i++)            
+                culmuFedTax += CalcFedTax(period, withDic, i);            
+
+            return culmuFedTax;
+        }
+
+        public double CalcStateTaxCulmulative(int periods, int selectedPeriod)
+        {
+            double stateTax = 0;
+
+            for (int i = 1; i <= selectedPeriod; i++)
+                stateTax += CalcStateTax(periods, i);
+
+            return stateTax;
+        }
+
+        public double CalcSSNTaxCulmulative(int periods, int selectedPeriod)
+        {
+            double ssnTax = 0;
+
+            for (int i = 1; i <= selectedPeriod; i++)
+                ssnTax += CalcSSNTax(periods, i);
+
+            return ssnTax;
+        }
+
+        public double CalcMedTaxCulmulative(int periods, int selectedPeriod)
+        {
+            double medTax = 0;
+
+            for (int i = 1; i <= selectedPeriod; i++)
+                medTax += CalcMedTax(periods, i);
+
+            return medTax;
+        }
+
+        public double CalcNetPay(int periods, Dictionary<string, WithholdTable> withDic,
+            int selectedPeriod)
+        {
+            double netPay = 0;
+
+            Dictionary<int, double> periodsWorked = GetPeriodsWorked(periods);
+            double salary = this.salary / periods * periodsWorked[selectedPeriod];
+            double fed = CalcFedTax(periods, withDic, selectedPeriod);
+            double state = CalcStateTax(periods, selectedPeriod);
+            double ssn = CalcSSNTax(periods, selectedPeriod);
+            double med = CalcMedTax(periods, selectedPeriod);
+            double netSalary = salary - fed - state - ssn - med;
+            netPay = Math.Round(netSalary, 2);
+            return netPay;
+        }
+
+        public double CalcNetPayCulmulative(int periods, Dictionary<string, WithholdTable> withDic,
+            int selectedPeriod)
+        {
+            double netPay = 0;
+
+            for (int i = 1; i <= selectedPeriod; i++)
+                netPay += CalcNetPay(periods, withDic, i);
+
+            return netPay;
+        }
+
+        public double CalcTotalTax(int periods, Dictionary<string, WithholdTable> withDic, int selectPeriod)
         {            
-            double fed = CalcFedTax(periods, withDic);
-            double state = CalcStateTax(periods);
-            double fica = CalcSSNTax(periods);
-            double mediTax = CalcMedTax(periods);
+            double fed = CalcFedTaxCulmulative(periods, withDic, selectPeriod);
+            double state = CalcStateTaxCulmulative(periods, selectPeriod);
+            double fica = CalcSSNTaxCulmulative(periods, selectPeriod);
+            double mediTax = CalcMedTaxCulmulative(periods, selectPeriod);
             double totalTax = fed + state + fica + mediTax;
             return totalTax;
         }
@@ -232,55 +307,7 @@ namespace Payroll
                 }
             }
             return weeksWorked;
-        }
-
-        public Dictionary<int, double> GetBiWeeksWorked()
-        {
-            Dictionary<int, double> biWorked = new Dictionary<int, double>();
-            int curYear = DateTime.Now.Year;
-            DateTime begin = new DateTime(curYear, 1, 1);
-            DateTime end = new DateTime(curYear, 12, 31);
-            int startMonth = this.startDate.Month;
-            int startDate = this.startDate.Day;
-            int endMonth = this.endDate.Month;
-            int endDate = this.endDate.Day;
-
-            if (this.startDate < begin && this.endDate > end)
-            {
-                for (int i = 1; i <= 26; i++)
-                {
-                    biWorked.Add(i, 1);
-                }
-            }
-            else
-            {
-                int bDaysPassed = (this.startDate - begin).Days + 1;
-                int beginPeriods = bDaysPassed / 14 + 1;
-                int beginExcessDays = bDaysPassed % 14;
-
-                double beginPercentPeriod = 1;
-
-                if (beginExcessDays != 0)
-                    beginPercentPeriod = Math.Round((double)(14 - beginExcessDays) / 14, 2);
-
-                int eDaysPassed = (end - this.endDate).Days;
-                int periodsLeft = eDaysPassed / 14;
-                int lastPeriod = 26 - periodsLeft;
-
-                for (int i = 1; i <= 26; i++)
-                {
-                    if (i < beginPeriods)
-                        biWorked.Add(i, 0);
-                    else if (i == beginPeriods)
-                        biWorked.Add(i, beginPercentPeriod);
-                    else if (i > lastPeriod)
-                        biWorked.Add(i, 0);
-                    else
-                        biWorked.Add(i, 1);
-                }
-            }
-            return biWorked;
-        }
+        }        
 
         public Dictionary<int, double> GetMonthsWorked()
         {

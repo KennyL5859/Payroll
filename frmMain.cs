@@ -270,7 +270,7 @@ namespace Payroll
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            var x = EmpList[0].GetWeeksWorked(52);
+            var x = EmpList[0].CalcStateTax(12, 2);
 
             MessageBox.Show("HI");
         }

@@ -56,13 +56,18 @@ namespace Payroll
             int period = Convert.ToInt32(ddlPayPeriod.SelectedIndex) + 1;
             Employee emp = EmpList[empSelect];
             string fullName = emp.firstName + " " + emp.lastName;
-            double fica = emp.CalcFedTax(numPeriods, WithHoldDic);
-            double state = emp.CalcStateTax(numPeriods);
-            double mediTax = emp.CalcMedTax(numPeriods);
-            double ssnTax = emp.CalcSSNTax(numPeriods);
-            double total = emp.CalcTotalTax(numPeriods, WithHoldDic);
-            double netPay = (emp.salary / numPeriods) - total;
-
+            double fed = emp.CalcFedTax(numPeriods, WithHoldDic, period);
+            double state = emp.CalcStateTax(numPeriods, period);
+            double mediTax = emp.CalcMedTax(numPeriods, period);
+            double ssnTax = emp.CalcSSNTax(numPeriods, period);
+            double totalTax = fed + state + mediTax + ssnTax;
+            double totalCulmulativeTax = emp.CalcTotalTax(numPeriods, WithHoldDic, period);
+            double fedCul = emp.CalcFedTaxCulmulative(numPeriods, WithHoldDic, period);
+            double stateCul = emp.CalcSSNTaxCulmulative(numPeriods, period);
+            double ssnCul = emp.CalcSSNTaxCulmulative(numPeriods, period);
+            double mediCul = emp.CalcMedTaxCulmulative(numPeriods, period);
+            double netPay = emp.CalcNetPay(numPeriods, WithHoldDic, period);
+            double netPayCul = emp.CalcNetPayCulmulative(numPeriods, WithHoldDic, period);
 
             lstResults.Items.Add(fullName);
             lstResults.Items.Add("Pay Period:  " + period);
@@ -70,20 +75,20 @@ namespace Payroll
             lstResults.Items.Add("Current".PadLeft(30) + "YTD".PadLeft(20));
             lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
 
-            lstResults.Items.Add("FICA" + fica.ToString().PadLeft(26) + 
-                fica.ToString().PadLeft(20));
+            lstResults.Items.Add("FICA" + ssnTax.ToString().PadLeft(26) + 
+                ssnCul.ToString().PadLeft(20));
             lstResults.Items.Add("Medi" + mediTax.ToString().PadLeft(26) +
-                mediTax.ToString().PadLeft(20));
-            lstResults.Items.Add("Fed" + fica.ToString().PadLeft(27) +
-                fica.ToString().PadLeft(20));
+                mediCul.ToString().PadLeft(20));
+            lstResults.Items.Add("Fed" + fed.ToString().PadLeft(27) +
+                fedCul.ToString().PadLeft(20));
             lstResults.Items.Add("State" + state.ToString().PadLeft(25) +
-                state.ToString().PadLeft(20));
+                stateCul.ToString().PadLeft(20));
             lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
-            lstResults.Items.Add("Total" + total.ToString().PadLeft(25) +
-                total.ToString().PadLeft(20));
+            lstResults.Items.Add("Total" + totalTax.ToString().PadLeft(25) +
+                totalCulmulativeTax.ToString().PadLeft(20));
             lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
             lstResults.Items.Add("Net Pay" + netPay.ToString().PadLeft(23) +
-                netPay.ToString().PadLeft(20));
+                netPayCul.ToString().PadLeft(20));
         }
         
 
@@ -165,11 +170,9 @@ namespace Payroll
 
         private void tosbtnExcel_Click(object sender, EventArgs e)
         {
-            var pWorked = EmpList[0].GetMonthsWorked();
+          
 
-            MessageBox.Show("hi");
-
-
+            MessageBox.Show("HI");
         }
     }
 }
