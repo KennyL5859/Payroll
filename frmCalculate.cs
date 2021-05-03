@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Payroll
 {
@@ -51,6 +52,7 @@ namespace Payroll
 
         private void AddResultsToListbox()
         {
+            lstResults.Items.Clear();
             int empSelect = ddlEmployees.SelectedIndex;
             int numPeriods = GetNumPayPeriods();
             int period = Convert.ToInt32(ddlPayPeriod.SelectedIndex) + 1;
@@ -170,9 +172,24 @@ namespace Payroll
 
         private void tosbtnExcel_Click(object sender, EventArgs e)
         {
-          
+
+            SaveFileDialog saveWindow = new SaveFileDialog();
+            saveWindow.Title = "Export data to Excel";
+            saveWindow.Filter = "Excel New (.xlsx)|*.xlsx|Excel Old (.xls)|*xls";
+            saveWindow.ShowDialog();
+
+            if (saveWindow.FileName == "")
+                return;
+
+            string fileName = saveWindow.FileName;
+            WriteToExcel(fileName);
 
             MessageBox.Show("HI");
+        }
+
+        private void WriteToExcel(string file)
+        {
+            int numPeriods = GetNumPayPeriods();
         }
     }
 }
