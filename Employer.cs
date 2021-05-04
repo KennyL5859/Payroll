@@ -28,7 +28,7 @@ namespace Payroll
             double ssnTax = 0;
 
             for (int i = 0; i < EmpList.Count; i++)
-                ssnTax += EmpList[i].CalcSSNTax(numPeriods, period);            
+                ssnTax += EmpList[i].CalcSSNTax(numPeriods, period);
 
             return Math.Round(ssnTax, 2);
         }
@@ -36,11 +36,41 @@ namespace Payroll
         public double CalcMediTax(int period)
         {
             double medTax = 0;
-            
-            for (int i = 0; i < EmpList.Count; i++)                
-                medTax += EmpList[i].CalcMedTax(numPeriods, period);           
+
+            for (int i = 0; i < EmpList.Count; i++)
+                medTax += EmpList[i].CalcMedTax(numPeriods, period);
 
             return Math.Round(medTax, 2);
+        }
+
+        public double CalcFedTax(int period)
+        {
+            double fedTax = 0;
+
+            for (int i = 0; i < EmpList.Count; i++)
+                fedTax += EmpList[i].CalcFedTax(numPeriods, withHoldDic, period);
+
+            return Math.Round(fedTax, 2);
+        }
+
+        public double CalcStateTax(int period)
+        {
+            double stateTax = 0;
+
+            for (int i = 0; i < EmpList.Count; i++)
+                stateTax += EmpList[i].CalcStateTax(numPeriods, period);
+
+            return Math.Round(stateTax, 2);
+        }
+
+        public double MonthlyFedWitholding(int period)
+        {
+            double monthlyFedWithold = 0;
+            double ssnTax = CalcSSNTax(period);
+            double medTax = CalcMediTax(period);
+            double fedTax = CalcFedTax(period);
+            monthlyFedWithold = (2 * ssnTax) + (2 * medTax) + fedTax;
+            return monthlyFedWithold;
         }
 
 

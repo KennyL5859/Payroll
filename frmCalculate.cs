@@ -215,8 +215,10 @@ namespace Payroll
         {
             int numPeriods = GetNumPayPeriods();
             Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
+            Excel.Worksheet xlWkSheet = (Excel.Worksheet)xlWorkBook.Worksheets["Sheet1"];
+            xlWkSheet.Name = "Summary";
 
-            
+
 
         }
 
@@ -276,8 +278,8 @@ namespace Payroll
         {
             Employer emp = new Employer(WithHoldDic, EmpList, 12);
 
-            double x = emp.CalcSSNTax(1);
-            double y = emp.CalcSSNTax(5);
+            double x = emp.CalcStateTax(1);
+            double y = emp.CalcStateTax(5);
 
             MessageBox.Show("HI");
         }
