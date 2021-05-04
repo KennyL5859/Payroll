@@ -45,7 +45,10 @@ namespace Payroll
             this.radMonthly = new System.Windows.Forms.RadioButton();
             this.lblPayFreq = new System.Windows.Forms.Label();
             this.lstResults = new System.Windows.Forms.ListBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tosMain.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tosMain
@@ -58,7 +61,7 @@ namespace Payroll
             this.tosMain.Location = new System.Drawing.Point(0, 0);
             this.tosMain.Name = "tosMain";
             this.tosMain.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.tosMain.Size = new System.Drawing.Size(836, 33);
+            this.tosMain.Size = new System.Drawing.Size(836, 38);
             this.tosMain.TabIndex = 0;
             this.tosMain.Text = "toolStrip1";
             // 
@@ -68,7 +71,7 @@ namespace Payroll
             this.tosbtnCalculate.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnCalculate.Image")));
             this.tosbtnCalculate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnCalculate.Name = "tosbtnCalculate";
-            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 28);
+            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 33);
             this.tosbtnCalculate.Text = "Calculate";
             this.tosbtnCalculate.Click += new System.EventHandler(this.tosbtnCalculate_Click);
             // 
@@ -220,11 +223,29 @@ namespace Payroll
             this.lstResults.Size = new System.Drawing.Size(738, 424);
             this.lstResults.TabIndex = 11;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tosStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 690);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(836, 28);
+            this.statusStrip1.TabIndex = 12;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // tosStatus
+            // 
+            this.tosStatus.Name = "tosStatus";
+            this.tosStatus.RightToLeftAutoMirrorImage = true;
+            this.tosStatus.Size = new System.Drawing.Size(0, 21);
+            // 
             // frmCalculate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(836, 703);
+            this.ClientSize = new System.Drawing.Size(836, 718);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.lstResults);
             this.Controls.Add(this.lblPayFreq);
             this.Controls.Add(this.radMonthly);
@@ -243,6 +264,8 @@ namespace Payroll
             this.Load += new System.EventHandler(this.frmCalculate_Load);
             this.tosMain.ResumeLayout(false);
             this.tosMain.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -265,5 +288,7 @@ namespace Payroll
         private System.Windows.Forms.Label lblPayFreq;
         private System.Windows.Forms.ListBox lstResults;
         private System.Windows.Forms.ToolStripDropDownButton tosddbtnPDF;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel tosStatus;
     }
 }

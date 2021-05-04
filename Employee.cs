@@ -58,10 +58,11 @@ namespace Payroll
             this.endDate = end;
         }
 
-        public double salaryPerPeriod(int periods)
+        public double salaryPerPeriod(int periods, int selectedPeriod)
         {
-            double salary = this.salary / periods;
-            return salary;
+            Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
+            double salary = this.salary / periods * periodsRate[selectedPeriod];
+            return Math.Round(salary, 2);
         }
 
         public double CalcSSNTax(int periods, int selectedPeriod)
@@ -117,8 +118,13 @@ namespace Payroll
             double deductions = ((this.childDep * 2375) + (this.otherDep * 1000)) / periods;
             double perPeriodSalary = this.salary / periods * periodsRate[selectedPeriod];
             double tax = (perPeriodSalary - deductions) * 0.0495 + this.xStateWithold;
-            stateTax = Math.Round(tax, 2);
-            return stateTax;
+
+            if (tax < 0)
+                stateTax = 0;
+            else
+                stateTax = Math.Round(tax, 2);
+
+            return stateTax;            
         }
 
         public double CalcFedTax(int periods, Dictionary<string, WithholdTable> withDic, 

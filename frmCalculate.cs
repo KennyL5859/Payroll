@@ -184,12 +184,74 @@ namespace Payroll
             string fileName = saveWindow.FileName;
             WriteToExcel(fileName);
 
-            MessageBox.Show("HI");
+       
         }
 
         private void WriteToExcel(string file)
         {
+            object misValue = System.Reflection.Missing.Value;         
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Add(misValue);
+            Excel.Worksheet xlWksheet;
+
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    xlWksheet = (Excel.Worksheet)xlWorkBook.Worksheets.Add();
+            //    xlWksheet.Name = i.ToString();
+            //}
+
+            WriteEachEmployee(xlWorkBook);         
+
+
+            xlWorkBook.SaveAs(file, Excel.XlFileFormat.xlOpenXMLWorkbook, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+            tosStatus.Text = "Excel file saved to " + file.ToString();
+
+        }
+
+        private void WriteEachEmployee(Excel.Workbook xlWorkbook)
+        {
             int numPeriods = GetNumPayPeriods();
+
+            for (int i = 0; i <= 3; i++)
+            {
+                Employee emp = EmpList[i];
+                string name = emp.firstName + " " + emp.lastName;
+                double pSalary = emp.salary / numPeriods;  
+
+                Excel.Worksheet xlWkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.Add();
+                xlWkSheet.Name = name;
+
+                xlWkSheet.Cells[3, 1] = "Gross Wages";
+                xlWkSheet.Cells[4, 1] = "FICA";
+                xlWkSheet.Cells[5, 1] = "Med";
+                xlWkSheet.Cells[6, 1] = "Fed";
+                xlWkSheet.Cells[7, 1] = "State";
+                xlWkSheet.Cells[9, 1] = "Net";
+
+                for (int x = 1; x <= numPeriods; x++)
+                {
+                    
+                    double payPerPeriod = emp.salaryPerPeriod(numPeriods, x);
+                    double ssnTax = emp.CalcSSNTax(numPeriods, x);
+                    double medTax = emp.CalcMedTax(numPeriods, x);
+                    double fedTax = emp.CalcFedTax(numPeriods, WithHoldDic, x);
+                    double stateTax = emp.CalcStateTax(numPeriods, x);
+                    double netPay = emp.CalcNetPay(numPeriods, WithHoldDic, x);
+
+                    xlWkSheet.Cells[2, x + 1] = x;
+                    xlWkSheet.Cells[3, x + 1] = payPerPeriod.ToString();
+                    xlWkSheet.Cells[4, x + 1] = ssnTax.ToString();
+                    xlWkSheet.Cells[5, x + 1] = medTax.ToString();
+                    xlWkSheet.Cells[6, x + 1] = fedTax.ToString();
+                    xlWkSheet.Cells[7, x + 1] = stateTax.ToString();
+                    xlWkSheet.Cells[9, x + 1] = netPay.ToString();
+
+                }
+
+            }
         }
     }
 }
