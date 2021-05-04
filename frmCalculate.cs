@@ -223,6 +223,7 @@ namespace Payroll
 
                 Excel.Worksheet xlWkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.Add();
                 xlWkSheet.Name = name;
+                Excel.Borders borders;
 
                 xlWkSheet.Cells[3, 1] = "Gross Wages";
                 xlWkSheet.Cells[4, 1] = "FICA";
@@ -247,10 +248,18 @@ namespace Payroll
                     xlWkSheet.Cells[5, x + 1] = medTax.ToString();
                     xlWkSheet.Cells[6, x + 1] = fedTax.ToString();
                     xlWkSheet.Cells[7, x + 1] = stateTax.ToString();
+                    borders = xlWkSheet.Cells[7, x + 1].Borders;
+                    borders[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlContinuous;
+                    borders[Excel.XlBordersIndex.xlEdgeBottom].Weight = 3d;
+
                     xlWkSheet.Cells[9, x + 1] = netPay.ToString();
-
+                    xlWkSheet.Cells[9, x + 1].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightBlue);
+                    borders = xlWkSheet.Cells[9, x + 1].Borders;
+                    borders[Excel.XlBordersIndex.xlEdgeTop].LineStyle = Excel.XlLineStyle.xlContinuous;
+                    borders[Excel.XlBordersIndex.xlEdgeTop].Weight = 2d;
+                    borders[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlDouble;
+                    borders[Excel.XlBordersIndex.xlEdgeTop].Weight = 3d;
                 }
-
             }
         }
     }
