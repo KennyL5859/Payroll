@@ -200,14 +200,23 @@ namespace Payroll
             //    xlWksheet.Name = i.ToString();
             //}
 
-            WriteEachEmployee(xlWorkBook);         
-
+            WriteEachEmployee(xlWorkBook);
+            WriteSummaryPage(xlWorkBook);
 
             xlWorkBook.SaveAs(file, Excel.XlFileFormat.xlOpenXMLWorkbook, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
 
             tosStatus.Text = "Excel file saved to " + file.ToString();
+
+        }
+
+        private void WriteSummaryPage(Excel.Workbook xlWorkBook)
+        {
+            int numPeriods = GetNumPayPeriods();
+            Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
+
+            
 
         }
 
@@ -261,6 +270,16 @@ namespace Payroll
                     borders[Excel.XlBordersIndex.xlEdgeTop].Weight = 3d;
                 }
             }
+        }
+
+        private void tosTest_Click(object sender, EventArgs e)
+        {
+            Employer emp = new Employer(WithHoldDic, EmpList, 12);
+
+            double x = emp.CalcSSNTax(1);
+            double y = emp.CalcSSNTax(5);
+
+            MessageBox.Show("HI");
         }
     }
 }

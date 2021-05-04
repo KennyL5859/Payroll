@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Employee.cs" />
+    <Compile Include="Employer.cs" />
     <Compile Include="frmAddEditEmp.cs">
       <SubType>Form</SubType>
     </Compile>

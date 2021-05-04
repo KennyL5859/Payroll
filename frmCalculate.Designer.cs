@@ -47,6 +47,7 @@ namespace Payroll
             this.lstResults = new System.Windows.Forms.ListBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tosTest = new System.Windows.Forms.ToolStripButton();
             this.tosMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -57,7 +58,8 @@ namespace Payroll
             this.tosMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tosbtnCalculate,
             this.tosbtnExcel,
-            this.tosddbtnPDF});
+            this.tosddbtnPDF,
+            this.tosTest});
             this.tosMain.Location = new System.Drawing.Point(0, 0);
             this.tosMain.Name = "tosMain";
             this.tosMain.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
@@ -230,6 +232,16 @@ namespace Payroll
             this.tosStatus.RightToLeftAutoMirrorImage = true;
             this.tosStatus.Size = new System.Drawing.Size(0, 17);
             // 
+            // tosTest
+            // 
+            this.tosTest.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tosTest.Image = ((System.Drawing.Image)(resources.GetObject("tosTest.Image")));
+            this.tosTest.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tosTest.Name = "tosTest";
+            this.tosTest.Size = new System.Drawing.Size(28, 28);
+            this.tosTest.Text = "toolStripButton1";
+            this.tosTest.Click += new System.EventHandler(this.tosTest_Click);
+            // 
             // frmCalculate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -279,5 +291,6 @@ namespace Payroll
         private System.Windows.Forms.ToolStripDropDownButton tosddbtnPDF;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tosStatus;
+        private System.Windows.Forms.ToolStripButton tosTest;
     }
 }
