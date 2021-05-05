@@ -12,9 +12,9 @@ namespace Payroll
         public List<Employee> EmpList { get; set; }
         public int numPeriods { get; set; }
 
-        public Employer()
-        {
-        }
+        private double stateTaxableLimit = 12960;
+        private double stateTaxableRate = 0.0675;
+
 
         public Employer(Dictionary<string, WithholdTable> wDic, List<Employee> eList, int periods)
         {
@@ -71,6 +71,63 @@ namespace Payroll
             double fedTax = CalcFedTax(period);
             monthlyFedWithold = (2 * ssnTax) + (2 * medTax) + fedTax;
             return monthlyFedWithold;
+        }
+
+        public Dictionary<string, List<double>> CalcQuarterlyStateWages(int quarter)
+        {
+            Dictionary<string, List<double>> quarterDic = new Dictionary<string, List<double>>();
+
+            Dictionary<int, int[]> monthlyDic = new Dictionary<int, int[]>();
+            monthlyDic.Add(1, new int[] { 1, 3 });
+            monthlyDic.Add(2, new int[] { 4, 6 });
+            monthlyDic.Add(3, new int[] { 7, 9 });
+            monthlyDic.Add(4, new int[] { 10, 12 });
+
+            Dictionary<int, int[]> semiMonthlyDic = new Dictionary<int, int[]>();
+            monthlyDic.Add(1, new int[] { 1, 6 });
+            monthlyDic.Add(2, new int[] { 7, 13 });
+            monthlyDic.Add(3, new int[] { 14, 20 });
+            monthlyDic.Add(4, new int[] { 21, 26 });
+
+            Dictionary<int, int[]> weeklyDic = new Dictionary<int, int[]>();
+            monthlyDic.Add(1, new int[] { 1, 13 });
+            monthlyDic.Add(2, new int[] { 14, 26 });
+            monthlyDic.Add(3, new int[] { 27, 39 });
+            monthlyDic.Add(4, new int[] { 40, 52 });
+
+            int[] periodRange = new int[2];
+
+            if (numPeriods == 12)            
+                periodRange = monthlyDic[quarter];            
+            else if (numPeriods == 26)            
+                periodRange = semiMonthlyDic[quarter];            
+            else if (numPeriods == 52)            
+                periodRange = weeklyDic[quarter];
+
+            int beginP = periodRange[0];
+            int endP = periodRange[1];
+            
+            for (int i = 0; i < EmpList.Count; i++)
+            {
+                string name = EmpList[i].firstName + " " + EmpList[i].lastName;
+                double quarterSal = EmpList[i].CalcQuarterlySalary(numPeriods, beginP, endP);
+                double totalSal = EmpList[i].CalcQuarterlySalary(numPeriods, 1, endP);
+
+                double excessSal = 0;
+                double taxableSal = 0;
+
+                if (totalSal > this.stateTaxableLimit)
+                    excessSal = totalSal - this.stateTaxableLimit;
+
+                if (excessSal < quarterSal)
+                    taxableSal = quarter - excessSal;
+
+
+
+            }
+
+
+            return quarterDic;
         }
 
 

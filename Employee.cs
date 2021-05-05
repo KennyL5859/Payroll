@@ -65,6 +65,16 @@ namespace Payroll
             return Math.Round(salary, 2);
         }
 
+        public double CalcQuarterlySalary(int periods, int beginP, int selectedPeriod)
+        {
+            double totalSalary = 0;
+
+            for (int i = beginP; i <= selectedPeriod; i++)
+                totalSalary += salaryPerPeriod(periods, i);
+
+            return totalSalary;
+        }
+
         public double CalcSSNTax(int periods, int selectedPeriod)
         {
             Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);

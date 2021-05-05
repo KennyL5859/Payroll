@@ -257,8 +257,6 @@ namespace Payroll
             }
 
 
-
-
         }
 
         private void WriteEachEmployee(Excel.Workbook xlWorkbook)
