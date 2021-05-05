@@ -315,8 +315,9 @@ namespace Payroll
         {
             Employer emp = new Employer(WithHoldDic, EmpList, 12);
 
-            double x = emp.CalcStateTax(1);
-            double y = emp.CalcStateTax(5);
+            var x = emp.CalcQuarterlyStateWages(4);
+
+            double sum = x.Sum(v => v.Value[3]);
 
             MessageBox.Show("HI");
         }

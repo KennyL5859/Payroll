@@ -84,16 +84,16 @@ namespace Payroll
             monthlyDic.Add(4, new int[] { 10, 12 });
 
             Dictionary<int, int[]> semiMonthlyDic = new Dictionary<int, int[]>();
-            monthlyDic.Add(1, new int[] { 1, 6 });
-            monthlyDic.Add(2, new int[] { 7, 13 });
-            monthlyDic.Add(3, new int[] { 14, 20 });
-            monthlyDic.Add(4, new int[] { 21, 26 });
+            semiMonthlyDic.Add(1, new int[] { 1, 6 });
+            semiMonthlyDic.Add(2, new int[] { 7, 13 });
+            semiMonthlyDic.Add(3, new int[] { 14, 20 });
+            semiMonthlyDic.Add(4, new int[] { 21, 26 });
 
             Dictionary<int, int[]> weeklyDic = new Dictionary<int, int[]>();
-            monthlyDic.Add(1, new int[] { 1, 13 });
-            monthlyDic.Add(2, new int[] { 14, 26 });
-            monthlyDic.Add(3, new int[] { 27, 39 });
-            monthlyDic.Add(4, new int[] { 40, 52 });
+            weeklyDic.Add(1, new int[] { 1, 13 });
+            weeklyDic.Add(2, new int[] { 14, 26 });
+            weeklyDic.Add(3, new int[] { 27, 39 });
+            weeklyDic.Add(4, new int[] { 40, 52 });
 
             int[] periodRange = new int[2];
 
@@ -120,12 +120,13 @@ namespace Payroll
                     excessSal = totalSal - this.stateTaxableLimit;
 
                 if (excessSal < quarterSal)
-                    taxableSal = quarter - excessSal;
+                    taxableSal = quarterSal - excessSal;
 
-
-
+                List<double> salList = new List<double>();
+                salList.AddRange(new List<double> {Math.Round(totalSal, 2), 
+                    Math.Round(quarterSal, 2), Math.Round(excessSal, 2), Math.Round(taxableSal, 2)});
+                quarterDic.Add(name, salList);
             }
-
 
             return quarterDic;
         }
