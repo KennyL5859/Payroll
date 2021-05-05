@@ -215,8 +215,47 @@ namespace Payroll
         {
             int numPeriods = GetNumPayPeriods();
             Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
-            Excel.Worksheet xlWkSheet = (Excel.Worksheet)xlWorkBook.Worksheets["Sheet1"];
-            xlWkSheet.Name = "Summary";
+            Excel.Borders sborders;
+            Excel.Worksheet xlSht = (Excel.Worksheet)xlWorkBook.Worksheets["Sheet1"];
+            xlSht.Name = "Summary";
+
+            xlSht.Cells[3, 1] = "FICA (Employee)";
+            xlSht.Cells[4, 1] = "Medicare (Employee)";
+            xlSht.Cells[6, 1] = "FICA (Casco)";
+            xlSht.Cells[7, 1] = "Medicare (Casco)";
+            xlSht.Cells[9, 1] = "Fed Withholding";
+            xlSht.Cells[10, 1] = "Fed-941";
+            xlSht.Cells[13, 1] = "IL-501";
+
+            for (int i = 1; i <= numPeriods; i++)
+            {
+                xlSht.Cells[2, i + 1] = i;
+
+                double fica = newEmp.CalcSSNTax(i);
+                double medTax = newEmp.CalcMediTax(i);
+                double fedTax = newEmp.CalcFedTax(i);
+                double stateTax = newEmp.CalcStateTax(i);
+                double fedWithhold = newEmp.MonthlyFedWitholding(i);
+
+                xlSht.Cells[3, i + 1] = fica;
+                xlSht.Cells[4, i + 1] = medTax;
+                xlSht.Cells[6, i + 1] = fica;
+                xlSht.Cells[7, i + 1] = medTax;
+                xlSht.Cells[9, i + 1] = fedTax;
+                xlSht.Cells[10, i + 1] = fedWithhold;
+                xlSht.Cells[10, i + 1].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                sborders = xlSht.Cells[10, i + 1].Borders;
+                sborders[Excel.XlBordersIndex.xlEdgeTop].LineStyle = Excel.XlLineStyle.xlContinuous;
+                sborders[Excel.XlBordersIndex.xlEdgeTop].Weight = 2d;
+                sborders[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlDouble;          
+                xlSht.Cells[13, i + 1] = stateTax;
+                xlSht.Cells[13, i + 1].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightBlue);
+                sborders = xlSht.Cells[13, i + 1].Borders;
+                sborders[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlDouble;
+
+               
+            }
+
 
 
 
