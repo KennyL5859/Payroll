@@ -219,17 +219,12 @@ namespace Payroll
             xlSht.Cells[6, 1] = "Tax Due";
 
 
-            for (int i = 0; i < EmpList.Count; i++)
-            {
-                string name = EmpList[i].firstName + " " + EmpList[i].lastName;
-                xlSht.Cells[9 + i, 1] = name;
-            }
+            for (int i = 0; i < EmpList.Count; i++)            
+                xlSht.Cells[9 + i, 1] = EmpList[i].firstName + " " + EmpList[i].lastName;
 
-            for (int i = 1; i <= 4; i++)
-            {
-                string quart = "Q" + i;
-                xlSht.Cells[2, i + 1] = quart;
-            }
+            for (int i = 1; i <= 4; i++)     
+                xlSht.Cells[2, i + 1] = "Q" + i;
+            
 
 
             
