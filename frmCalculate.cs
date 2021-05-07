@@ -194,13 +194,8 @@ namespace Payroll
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Add(misValue);
             Excel.Worksheet xlWksheet;
 
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    xlWksheet = (Excel.Worksheet)xlWorkBook.Worksheets.Add();
-            //    xlWksheet.Name = i.ToString();
-            //}
-
-            WriteEachEmployee(xlWorkBook);
+            WriteStateSummary(xlWorkBook);
+            WriteEachEmployee(xlWorkBook);     
             WriteSummaryPage(xlWorkBook);
 
             xlWorkBook.SaveAs(file, Excel.XlFileFormat.xlOpenXMLWorkbook, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
@@ -208,7 +203,36 @@ namespace Payroll
             xlApp.Quit();
 
             tosStatus.Text = "Excel file saved to " + file.ToString();
+        }
 
+        private void WriteStateSummary(Excel.Workbook xlWorkbook)
+        {
+            int numPeriods = GetNumPayPeriods();
+            Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
+            Excel.Worksheet xlSht = (Excel.Worksheet)xlWorkbook.Worksheets.Add();
+            Excel.Borders sborders;
+            xlSht.Name = "State";
+
+            xlSht.Cells[3, 1] = "Total Wages";
+            xlSht.Cells[4, 1] = "Excess Wages";
+            xlSht.Cells[5, 1] = "Taxable Wages";
+            xlSht.Cells[6, 1] = "Tax Due";
+
+
+            for (int i = 0; i < EmpList.Count; i++)
+            {
+                string name = EmpList[i].firstName + " " + EmpList[i].lastName;
+                xlSht.Cells[9 + i, 1] = name;
+            }
+
+            for (int i = 1; i <= 4; i++)
+            {
+                string quart = "Q" + i;
+                xlSht.Cells[2, i + 1] = quart;
+            }
+
+
+            
         }
 
         private void WriteSummaryPage(Excel.Workbook xlWorkBook)
@@ -251,12 +275,8 @@ namespace Payroll
                 xlSht.Cells[13, i + 1] = stateTax;
                 xlSht.Cells[13, i + 1].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightBlue);
                 sborders = xlSht.Cells[13, i + 1].Borders;
-                sborders[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlDouble;
-
-               
+                sborders[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlDouble;               
             }
-
-
         }
 
         private void WriteEachEmployee(Excel.Workbook xlWorkbook)
@@ -314,11 +334,8 @@ namespace Payroll
         private void tosTest_Click(object sender, EventArgs e)
         {
             Employer emp = new Employer(WithHoldDic, EmpList, 12);
-
             var x = emp.CalcQuarterlyStateWages(4);
-
             double sum = x.Sum(v => v.Value[3]);
-
             MessageBox.Show("HI");
         }
     }
