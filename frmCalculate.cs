@@ -182,9 +182,7 @@ namespace Payroll
                 return;
 
             string fileName = saveWindow.FileName;
-            WriteToExcel(fileName);
-
-       
+            WriteToExcel(fileName);       
         }
 
         private void WriteToExcel(string file)
@@ -211,7 +209,7 @@ namespace Payroll
             Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
             Excel.Worksheet xlSht = (Excel.Worksheet)xlWorkbook.Worksheets.Add();
             Excel.Borders sborders;
-            xlSht.Name = "State";
+            xlSht.Name = "State Umemployment";
 
             xlSht.Cells[3, 1] = "Total Wages";
             xlSht.Cells[4, 1] = "Excess Wages";
@@ -220,10 +218,6 @@ namespace Payroll
 
             Employer emp = new Employer(WithHoldDic, EmpList, numPeriods);   
 
-
-
-            for (int i = 0; i < EmpList.Count; i++)            
-                xlSht.Cells[9 + i, 1] = EmpList[i].firstName + " " + EmpList[i].lastName;
 
             for (int i = 1; i <= 4; i++)
             {
@@ -236,14 +230,28 @@ namespace Payroll
                 xlSht.Cells[3, i + 1] = totalWages;
                 xlSht.Cells[4, i + 1] = excessWages;
                 xlSht.Cells[5, i + 1] = taxableWages;
+                xlSht.Cells[6, i + 1] = taxDue;
+                xlSht.Cells[6, i + 1].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightBlue);
+
             }
+
+            for (int i = 0; i < EmpList.Count; i++)
+            {
+                string fName = EmpList[i].firstName + " " + EmpList[i].lastName;
+                xlSht.Cells[9 + i, 1] = fName;                
+
+                Dictionary<string, List<double>> quarterDic = emp.CalcQuarterlyStateWages(i + 1);
                 
-            
-
-
-            
+                for (int x = 0; x < EmpList.Count; x++)
+                {
+                    string name = EmpList[x].firstName + " " + EmpList[x].lastName;
+                    List<double> payList = quarterDic[name];
+                    double qSalary = payList[1];
+                    xlSht.Cells[9 + x, i + 2] = qSalary;
+                }               
+            }
         }
-
+        
         private void WriteSummaryPage(Excel.Workbook xlWorkBook)
         {
             int numPeriods = GetNumPayPeriods();

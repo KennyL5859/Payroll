@@ -13,7 +13,7 @@ namespace Payroll
         public int numPeriods { get; set; }
 
         private double stateTaxableLimit = 12960;
-        private double stateTaxableRate = 0.0675;
+        private double stateTaxableRate = 0.00675;
 
 
         public Employer(Dictionary<string, WithholdTable> wDic, List<Employee> eList, int periods)
