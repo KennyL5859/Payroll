@@ -122,15 +122,17 @@ namespace Payroll
                 if (excessSal < quarterSal)
                     taxableSal = quarterSal - excessSal;
 
+                double taxDue = taxableSal * this.stateTaxableRate;
+
                 List<double> salList = new List<double>();
                 salList.AddRange(new List<double> {Math.Round(totalSal, 2), 
-                    Math.Round(quarterSal, 2), Math.Round(excessSal, 2), Math.Round(taxableSal, 2)});
+                    Math.Round(quarterSal, 2), Math.Round(excessSal, 2), Math.Round(taxableSal, 2), 
+                    Math.Round(taxDue, 2)});
                 quarterDic.Add(name, salList);
             }
 
             return quarterDic;
         }
-
 
     }
 }

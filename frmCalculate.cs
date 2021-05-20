@@ -218,12 +218,26 @@ namespace Payroll
             xlSht.Cells[5, 1] = "Taxable Wages";
             xlSht.Cells[6, 1] = "Tax Due";
 
+            Employer emp = new Employer(WithHoldDic, EmpList, numPeriods);   
+
+
 
             for (int i = 0; i < EmpList.Count; i++)            
                 xlSht.Cells[9 + i, 1] = EmpList[i].firstName + " " + EmpList[i].lastName;
 
-            for (int i = 1; i <= 4; i++)     
+            for (int i = 1; i <= 4; i++)
+            {
+                Dictionary<string, List<double>> quarterDic = emp.CalcQuarterlyStateWages(i);
+                double totalWages = quarterDic.Sum(x => x.Value[1]);
+                double excessWages = quarterDic.Sum(x => x.Value[2]);
+                double taxableWages = quarterDic.Sum(x => x.Value[3]);
+                double taxDue = quarterDic.Sum(x => x.Value[4]);
                 xlSht.Cells[2, i + 1] = "Q" + i;
+                xlSht.Cells[3, i + 1] = totalWages;
+                xlSht.Cells[4, i + 1] = excessWages;
+                xlSht.Cells[5, i + 1] = taxableWages;
+            }
+                
             
 
 
