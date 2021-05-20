@@ -8,6 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
+using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.xml;
+using System.IO;
+
+
 
 namespace Payroll
 {
@@ -15,6 +22,10 @@ namespace Payroll
     {
         Dictionary<string, WithholdTable> WithHoldDic = new Dictionary<string, WithholdTable>();
         List<Employee> EmpList = new List<Employee>();
+        static string filePath = AppDomain.CurrentDomain.BaseDirectory;
+        string f941 = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\f941.pdf"));
+        string f940 = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\f940.pdf"));
+        string i940 = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\i941.pdf"));
 
         public frmCalculate()
         {
@@ -42,11 +53,9 @@ namespace Payroll
                 return;
 
             if (!CheckDDL(ddlPayPeriod, "You must select a pay period"))
-                return;           
-
+                return; 
 
             AddResultsToListbox();
-
         }
 
 
@@ -185,6 +194,19 @@ namespace Payroll
             WriteToExcel(fileName);       
         }
 
+        private void tosmnubtnFed941_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveWindow = new SaveFileDialog();
+            saveWindow.Title = "Export data to PDF";
+            saveWindow.Filter = "PDF (.pdf)|*.pdf";
+            saveWindow.ShowDialog();
+
+            if (saveWindow.FileName == "")
+                return;
+
+            string fileName = saveWindow.FileName;
+        }
+
         private void WriteToExcel(string file)
         {
             object misValue = System.Reflection.Missing.Value;         
@@ -207,17 +229,14 @@ namespace Payroll
         {
             int numPeriods = GetNumPayPeriods();
             Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
-            Excel.Worksheet xlSht = (Excel.Worksheet)xlWorkbook.Worksheets.Add();
-            Excel.Borders sborders;
+            Excel.Worksheet xlSht = (Excel.Worksheet)xlWorkbook.Worksheets.Add();         
             xlSht.Name = "State Umemployment";
-
             xlSht.Cells[3, 1] = "Total Wages";
             xlSht.Cells[4, 1] = "Excess Wages";
             xlSht.Cells[5, 1] = "Taxable Wages";
             xlSht.Cells[6, 1] = "Tax Due";
 
             Employer emp = new Employer(WithHoldDic, EmpList, numPeriods);   
-
 
             for (int i = 1; i <= 4; i++)
             {
@@ -355,5 +374,7 @@ namespace Payroll
             double sum = x.Sum(v => v.Value[3]);
             MessageBox.Show("HI");
         }
+
+
     }
 }
