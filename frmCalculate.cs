@@ -13,8 +13,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.xml;
 using System.IO;
-
-
+using System.Collections;
 
 namespace Payroll
 {
@@ -42,8 +41,10 @@ namespace Payroll
         private void frmCalculate_Load(object sender, EventArgs e)
         {
             AddNameToDDL();
-            SetNumPayPeriods();                        
+            SetNumPayPeriods();
+            AddQuartersToDDL();
         }
+
 
         private void tosbtnCalculate_Click(object sender, EventArgs e)
         {
@@ -100,84 +101,9 @@ namespace Payroll
             lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
             lstResults.Items.Add("Net Pay" + netPay.ToString().PadLeft(23) +
                 netPayCul.ToString().PadLeft(20));
-        }
-        
+        }        
 
-        private bool CheckDDL(ComboBox ddl, string msg)
-        {
-            if (ddl.SelectedIndex == -1)
-            {
-                MessageBox.Show(msg);
-                ddl.BackColor = Color.LightYellow;
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        private int GetNumPayPeriods()
-        {
-            int numPeriods = 0;
-
-            if (radWeekly.Checked)
-                numPeriods = 52;
-            else if (radBiWeekly.Checked)
-                numPeriods = 26;
-            else if (radMonthly.Checked)
-                numPeriods = 12;
-
-            return numPeriods;
-        }
-
-        private void SetNumPayPeriods()
-        {
-            ddlPayPeriod.Items.Clear();
-
-            if (radWeekly.Checked)
-            {
-                for (int i = 1; i <= 52; i++)
-                {
-                    ddlPayPeriod.Items.Add(i);
-                }
-            }
-            else if (radBiWeekly.Checked)
-            {
-                for (int i = 1; i <= 26; i++)
-                {
-                    ddlPayPeriod.Items.Add(i);
-                }
-            }
-            else if (radMonthly.Checked)
-            {
-                for (int i = 1; i <= 12; i++)
-                {
-                    ddlPayPeriod.Items.Add(i);
-                }
-            }
-        }
-
-        private void AddNameToDDL()
-        {
-            for (int i = 0; i < EmpList.Count; i++)
-            {
-                string name = EmpList[i].firstName + " " + EmpList[i].lastName;
-                ddlEmployees.Items.Add(name);
-            }
-        }
-
-        private void radMonthly_CheckedChanged(object sender, EventArgs e)
-        {
-            SetNumPayPeriods();
-        }
-
-        private void ClearDDLColors()
-        {
-            ddlEmployees.BackColor = Color.White;
-            ddlPayPeriod.BackColor = Color.White;
-            ddlQuarter.BackColor = Color.White;
-        }
+     
 
         private void tosbtnExcel_Click(object sender, EventArgs e)
         {
@@ -196,6 +122,10 @@ namespace Payroll
 
         private void tosmnubtnFed941_Click(object sender, EventArgs e)
         {
+            if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
+                return;
+
+
             SaveFileDialog saveWindow = new SaveFileDialog();
             saveWindow.Title = "Export data to PDF";
             saveWindow.Filter = "PDF (.pdf)|*.pdf";
@@ -205,6 +135,64 @@ namespace Payroll
                 return;
 
             string fileName = saveWindow.FileName;
+
+            // read the pdf file and find the textfield values
+            PdfReader pdr = new PdfReader(f941);
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var de in pdr.AcroFields.Fields)
+            {      
+                lstResults.Items.Add(de.ToString());
+            }
+
+            PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
+            AcroFields pdFF = pds.AcroFields;
+
+            pdFF.SetField("f1_1[0]", "36");
+            pdFF.SetField("f1_2[0]", "4084647");
+            pdFF.SetField("f1_3[0]", "CASCO (USA) INC");
+            pdFF.SetField("f1_5[0]", "1300 IROQUOIS, UNIT 245");
+            pdFF.SetField("f1_6[0]", "NAPERVILLE");
+            pdFF.SetField("f1_7[0]", "IL");
+            pdFF.SetField("f1_8[0]", "60653");
+
+            if (ddlQuarter.SelectedIndex == 0)
+                pdFF.SetField("c1_1[0]", "1");
+            else if (ddlQuarter.SelectedIndex == 1)
+                pdFF.SetField("c1_1[1]", "2");
+            else if (ddlQuarter.SelectedIndex == 2)
+                pdFF.SetField("c1_1[2]", "3");
+            else if (ddlQuarter.SelectedIndex == 3)
+                pdFF.SetField("c1_1[3]", "4");
+
+
+
+
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36"); 
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+            //pdFF.SetField("f1_1[0]", "36");
+
+            pds.FormFlattening = false;
+            pds.Close();
+          
+
+
+
         }
 
         private void WriteToExcel(string file)
@@ -212,7 +200,6 @@ namespace Payroll
             object misValue = System.Reflection.Missing.Value;         
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Add(misValue);
-            Excel.Worksheet xlWksheet;
 
             WriteStateSummary(xlWorkBook);
             WriteEachEmployee(xlWorkBook);     
@@ -365,6 +352,88 @@ namespace Payroll
                     borders[Excel.XlBordersIndex.xlEdgeTop].Weight = 3d;
                 }
             }
+        }
+
+        private bool CheckDDL(ComboBox ddl, string msg)
+        {
+            if (ddl.SelectedIndex == -1)
+            {
+                MessageBox.Show(msg);
+                ddl.BackColor = Color.LightYellow;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private int GetNumPayPeriods()
+        {
+            int numPeriods = 0;
+
+            if (radWeekly.Checked)
+                numPeriods = 52;
+            else if (radBiWeekly.Checked)
+                numPeriods = 26;
+            else if (radMonthly.Checked)
+                numPeriods = 12;
+
+            return numPeriods;
+        }
+
+        private void SetNumPayPeriods()
+        {
+            ddlPayPeriod.Items.Clear();
+
+            if (radWeekly.Checked)
+            {
+                for (int i = 1; i <= 52; i++)
+                {
+                    ddlPayPeriod.Items.Add(i);
+                }
+            }
+            else if (radBiWeekly.Checked)
+            {
+                for (int i = 1; i <= 26; i++)
+                {
+                    ddlPayPeriod.Items.Add(i);
+                }
+            }
+            else if (radMonthly.Checked)
+            {
+                for (int i = 1; i <= 12; i++)
+                {
+                    ddlPayPeriod.Items.Add(i);
+                }
+            }
+        }
+
+        private void AddNameToDDL()
+        {
+            for (int i = 0; i < EmpList.Count; i++)
+            {
+                string name = EmpList[i].firstName + " " + EmpList[i].lastName;
+                ddlEmployees.Items.Add(name);
+            }
+        }
+
+        private void AddQuartersToDDL()
+        {
+            for (int i = 1; i <= 4; i++)
+                ddlQuarter.Items.Add(i);
+        }
+
+        private void radMonthly_CheckedChanged(object sender, EventArgs e)
+        {
+            SetNumPayPeriods();
+        }
+
+        private void ClearDDLColors()
+        {
+            ddlEmployees.BackColor = Color.White;
+            ddlPayPeriod.BackColor = Color.White;
+            ddlQuarter.BackColor = Color.White;
         }
 
         private void tosTest_Click(object sender, EventArgs e)

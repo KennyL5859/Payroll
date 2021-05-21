@@ -34,6 +34,7 @@ namespace Payroll
             this.tosbtnCalculate = new System.Windows.Forms.ToolStripButton();
             this.tosbtnExcel = new System.Windows.Forms.ToolStripButton();
             this.tosddbtnPDF = new System.Windows.Forms.ToolStripDropDownButton();
+            this.tosmnubtnFed941 = new System.Windows.Forms.ToolStripMenuItem();
             this.tosTest = new System.Windows.Forms.ToolStripButton();
             this.lblEmployee = new System.Windows.Forms.Label();
             this.lblPayPeriod = new System.Windows.Forms.Label();
@@ -48,7 +49,6 @@ namespace Payroll
             this.lstResults = new System.Windows.Forms.ListBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tosmnubtnFed941 = new System.Windows.Forms.ToolStripMenuItem();
             this.tosMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -64,7 +64,7 @@ namespace Payroll
             this.tosMain.Location = new System.Drawing.Point(0, 0);
             this.tosMain.Name = "tosMain";
             this.tosMain.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.tosMain.Size = new System.Drawing.Size(836, 33);
+            this.tosMain.Size = new System.Drawing.Size(836, 38);
             this.tosMain.TabIndex = 0;
             this.tosMain.Text = "toolStrip1";
             // 
@@ -74,7 +74,7 @@ namespace Payroll
             this.tosbtnCalculate.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnCalculate.Image")));
             this.tosbtnCalculate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnCalculate.Name = "tosbtnCalculate";
-            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 28);
+            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 33);
             this.tosbtnCalculate.Text = "Calculate";
             this.tosbtnCalculate.Click += new System.EventHandler(this.tosbtnCalculate_Click);
             // 
@@ -84,7 +84,7 @@ namespace Payroll
             this.tosbtnExcel.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnExcel.Image")));
             this.tosbtnExcel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnExcel.Name = "tosbtnExcel";
-            this.tosbtnExcel.Size = new System.Drawing.Size(34, 28);
+            this.tosbtnExcel.Size = new System.Drawing.Size(34, 33);
             this.tosbtnExcel.Text = "Export to Excel";
             this.tosbtnExcel.Click += new System.EventHandler(this.tosbtnExcel_Click);
             // 
@@ -96,8 +96,15 @@ namespace Payroll
             this.tosddbtnPDF.Image = ((System.Drawing.Image)(resources.GetObject("tosddbtnPDF.Image")));
             this.tosddbtnPDF.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosddbtnPDF.Name = "tosddbtnPDF";
-            this.tosddbtnPDF.Size = new System.Drawing.Size(42, 28);
+            this.tosddbtnPDF.Size = new System.Drawing.Size(42, 33);
             this.tosddbtnPDF.Text = "toolStripDropDownButton1";
+            // 
+            // tosmnubtnFed941
+            // 
+            this.tosmnubtnFed941.Name = "tosmnubtnFed941";
+            this.tosmnubtnFed941.Size = new System.Drawing.Size(180, 34);
+            this.tosmnubtnFed941.Text = "Fed-941";
+            this.tosmnubtnFed941.Click += new System.EventHandler(this.tosmnubtnFed941_Click);
             // 
             // tosTest
             // 
@@ -105,7 +112,7 @@ namespace Payroll
             this.tosTest.Image = ((System.Drawing.Image)(resources.GetObject("tosTest.Image")));
             this.tosTest.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosTest.Name = "tosTest";
-            this.tosTest.Size = new System.Drawing.Size(34, 28);
+            this.tosTest.Size = new System.Drawing.Size(34, 33);
             this.tosTest.Text = "toolStripButton1";
             this.tosTest.Click += new System.EventHandler(this.tosTest_Click);
             // 
@@ -229,6 +236,9 @@ namespace Payroll
             // 
             // lstResults
             // 
+            this.lstResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstResults.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstResults.FormattingEnabled = true;
             this.lstResults.ItemHeight = 28;
@@ -255,13 +265,6 @@ namespace Payroll
             this.tosStatus.Name = "tosStatus";
             this.tosStatus.RightToLeftAutoMirrorImage = true;
             this.tosStatus.Size = new System.Drawing.Size(0, 15);
-            // 
-            // tosmnubtnFed941
-            // 
-            this.tosmnubtnFed941.Name = "tosmnubtnFed941";
-            this.tosmnubtnFed941.Size = new System.Drawing.Size(270, 34);
-            this.tosmnubtnFed941.Text = "Fed-941";
-            this.tosmnubtnFed941.Click += new System.EventHandler(this.tosmnubtnFed941_Click);
             // 
             // frmCalculate
             // 
