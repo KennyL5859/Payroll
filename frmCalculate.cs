@@ -24,7 +24,7 @@ namespace Payroll
         static string filePath = AppDomain.CurrentDomain.BaseDirectory;
         string f941 = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\f941.pdf"));
         string f940 = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\f940.pdf"));
-        string i940 = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\i941.pdf"));
+        string i941 = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\i941.pdf"));
 
         public frmCalculate()
         {
@@ -120,11 +120,12 @@ namespace Payroll
             WriteToExcel(fileName);       
         }
 
-        private void tosmnubtnFed941_Click(object sender, EventArgs e)
+        private void tosmnuBtnIL941_Click(object sender, EventArgs e)
         {
+            ClearDDLColors();
+
             if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
                 return;
-
 
             SaveFileDialog saveWindow = new SaveFileDialog();
             saveWindow.Title = "Export data to PDF";
@@ -134,9 +135,75 @@ namespace Payroll
             if (saveWindow.FileName == "")
                 return;
 
+            string fileName = saveWindow.FileName;
             int periods = GetNumPayPeriods();
+            int quarter = ddlQuarter.SelectedIndex + 1;
+            Employer emp = new Employer(WithHoldDic, EmpList, periods);
+            double line1 = emp.CalcTotalQuarterlyWages(quarter);
+
+            // read the pdf file and find the textfield values
+            PdfReader pdr = new PdfReader(i941);
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var de in pdr.AcroFields.Fields)
+            {
+                lstResults.Items.Add(de.ToString());
+            }
+
+            PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
+            AcroFields pdFF = pds.AcroFields;
+
+            pdFF.SetField("fein", "36");
+            pdFF.SetField("fein1", "4084647");
+            pdFF.SetField("name", "CASCO USA INC");
+            pdFF.SetField("address", "1300 IROQUOIS AVE, SUITE 245");
+            pdFF.SetField("city", "NAPERVILLE");
+            pdFF.SetField("state", "IL");
+            pdFF.SetField("zip", "60563");
+            pdFF.SetField("checkbox4", quarter.ToString());
+
+            pdFF.SetField("w2", "0");
+            pdFF.SetField("Form1099", "0");
+
+
+            pdFF.SetField("line1", line1.ToString());
+
+
+            //pdFF.SetField("fein", "36");
+            //pdFF.SetField("fein", "36");
+            //pdFF.SetField("fein", "36");
+            //pdFF.SetField("fein", "36");
+            //pdFF.SetField("fein", "36");
+            //pdFF.SetField("fein", "36");
+            //pdFF.SetField("fein", "36");
+
+
+
+
+
+            pds.FormFlattening = false;
+            pds.Close();
+
+        }
+
+        private void tosmnubtnFed941_Click(object sender, EventArgs e)
+        {
+            ClearDDLColors();
+
+            if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
+                return;
+
+            SaveFileDialog saveWindow = new SaveFileDialog();
+            saveWindow.Title = "Export data to PDF";
+            saveWindow.Filter = "PDF (.pdf)|*.pdf";
+            saveWindow.ShowDialog();
+
+            if (saveWindow.FileName == "")
+                return;
 
             string fileName = saveWindow.FileName;
+            int periods = GetNumPayPeriods();
             Employer emp = new Employer(WithHoldDic, EmpList, periods);
             int quarter = ddlQuarter.SelectedIndex + 1;
             Dictionary<string, List<double>> payDic = emp.CalcQuarterlyStateWages(quarter);
@@ -171,12 +238,12 @@ namespace Payroll
 
             // read the pdf file and find the textfield values
             PdfReader pdr = new PdfReader(f941);
-            StringBuilder sb = new StringBuilder();
+            //StringBuilder sb = new StringBuilder();
 
-            foreach (var de in pdr.AcroFields.Fields)
-            {      
-                lstResults.Items.Add(de.ToString());
-            }
+            //foreach (var de in pdr.AcroFields.Fields)
+            //{      
+            //    lstResults.Items.Add(de.ToString());
+            //}
 
             PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
             AcroFields pdFF = pds.AcroFields;
@@ -513,11 +580,11 @@ namespace Payroll
 
         private void tosTest_Click(object sender, EventArgs e)
         {
-            double x = 325.268;
+            Employer emp = new Employer(WithHoldDic, EmpList, 12);
 
-            string[] test = SplitDollarAmounts(x);
+            var x = emp.CalcTotalQuarterlyWages(1);
 
-            MessageBox.Show("done");
+            MessageBox.Show("hi");
         }
 
 

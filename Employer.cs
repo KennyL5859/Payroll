@@ -98,6 +98,20 @@ namespace Payroll
             return quarterWithDic;
         }
 
+        // calculates the total quarterly wages for all employees combined
+        public double CalcTotalQuarterlyWages(int quarter)
+        {
+            double totalQuarterWages = 0;
+            int[] periodRange = GetPeriodDateRange(quarter);
+            int beginP = periodRange[0];
+            int endP = periodRange[1];
+
+            for (int i = 0; i < EmpList.Count; i++)            
+                totalQuarterWages += EmpList[i].CalcQuarterlySalary(numPeriods, beginP, endP);
+
+            return totalQuarterWages;
+        }
+
 
         public Dictionary<string, List<double>> CalcQuarterlyStateWages(int quarter)
         {
