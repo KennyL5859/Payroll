@@ -121,6 +121,8 @@ namespace Payroll
 
                 if (excessSal < quarterSal)
                     taxableSal = quarterSal - excessSal;
+                else
+                    excessSal = quarterSal;
 
                 double taxDue = taxableSal * this.stateTaxableRate;
 

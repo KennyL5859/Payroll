@@ -134,7 +134,15 @@ namespace Payroll
             if (saveWindow.FileName == "")
                 return;
 
+            int periods = GetNumPayPeriods();
+
             string fileName = saveWindow.FileName;
+            Employer emp = new Employer(WithHoldDic, EmpList, periods);
+            int quarter = ddlQuarter.SelectedIndex + 1;
+            Dictionary<string, List<double>> payDic = emp.CalcQuarterlyStateWages(quarter);
+            double wages = payDic.Sum(x => x.Value[1]);
+
+            string[] wagesSplit = SplitDollarAmounts(wages);
 
             // read the pdf file and find the textfield values
             PdfReader pdr = new PdfReader(f941);
@@ -157,7 +165,7 @@ namespace Payroll
             pdFF.SetField("f1_8[0]", "60653");
 
             if (ddlQuarter.SelectedIndex == 0)
-                pdFF.SetField("c1_1[0]", "1");
+                pdFF.SetField("c1_1[0]", "1");            
             else if (ddlQuarter.SelectedIndex == 1)
                 pdFF.SetField("c1_1[1]", "2");
             else if (ddlQuarter.SelectedIndex == 2)
@@ -165,12 +173,13 @@ namespace Payroll
             else if (ddlQuarter.SelectedIndex == 3)
                 pdFF.SetField("c1_1[3]", "4");
 
+            pdFF.SetField("f1_12[0]", EmpList.Count.ToString());
+
+            pdFF.SetField("f1_13[0]", wagesSplit[0]);
+            pdFF.SetField("f1_14[0]", wagesSplit[1]);
 
 
 
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36"); 
             //pdFF.SetField("f1_1[0]", "36");
             //pdFF.SetField("f1_1[0]", "36");
             //pdFF.SetField("f1_1[0]", "36");
@@ -189,10 +198,13 @@ namespace Payroll
 
             pds.FormFlattening = false;
             pds.Close();
-          
+        }
 
-
-
+        private string[] SplitDollarAmounts(double dollar)
+        {
+            string sDollar = dollar.ToString();
+            string[] parts = sDollar.Split('.');
+            return parts;
         }
 
         private void WriteToExcel(string file)
