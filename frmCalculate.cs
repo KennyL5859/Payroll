@@ -140,6 +140,20 @@ namespace Payroll
             int quarter = ddlQuarter.SelectedIndex + 1;
             Employer emp = new Employer(WithHoldDic, EmpList, periods);
             double line1 = emp.CalcTotalQuarterlyWages(quarter);
+            int[] periodsRange = emp.GetPeriodDateRange(quarter);
+            int beginP = periodsRange[0];
+            int endP = periodsRange[1];
+            List<double> monthlyTax = new List<double>(); 
+
+            for (int i = beginP; i <= endP; i++)            
+                monthlyTax.Add(emp.CalcStateTax(i));
+
+            double totalWithhold = monthlyTax.Sum();
+
+            string[] firstMonth = SplitDollarAmounts(monthlyTax[0]);
+            string[] secondMonth = SplitDollarAmounts(monthlyTax[1]);
+            string[] thirdMonth = SplitDollarAmounts(monthlyTax[2]);
+
 
             // read the pdf file and find the textfield values
             PdfReader pdr = new PdfReader(i941);
@@ -162,12 +176,35 @@ namespace Payroll
             pdFF.SetField("state", "IL");
             pdFF.SetField("zip", "60563");
             pdFF.SetField("checkbox4", quarter.ToString());
-
             pdFF.SetField("w2", "0");
             pdFF.SetField("Form1099", "0");
-
-
             pdFF.SetField("line1", line1.ToString());
+            pdFF.SetField("Month1Day28", firstMonth[0]);
+            pdFF.SetField("Month1Day28Cents", firstMonth[1]);
+            pdFF.SetField("Month2Day28", secondMonth[0]);
+            pdFF.SetField("Month2Day28Cents", secondMonth[1]);
+            pdFF.SetField("Month3Day28", thirdMonth[0]);
+            pdFF.SetField("Month3Day28Cents", thirdMonth[1]);
+
+            pdFF.SetField("Month1Total", firstMonth[0]);
+            pdFF.SetField("Month1TotalCents", firstMonth[1]);
+            pdFF.SetField("Month2Total", secondMonth[0]);
+            pdFF.SetField("Month2TotalCents", secondMonth[1]);
+            pdFF.SetField("Month3Total", thirdMonth[0]);
+            pdFF.SetField("Month3TotalCents", thirdMonth[1]);
+            pdFF.SetField("line3", "0.00");
+            pdFF.SetField("line4", totalWithhold.ToString());
+            pdFF.SetField("line5", totalWithhold.ToString());
+            pdFF.SetField("line6", "0.00");
+
+            pdFF.SetField("Title", "President");
+            pdFF.SetField("areacode1", "630");
+            pdFF.SetField("phonenumber1", "802-5498");
+
+
+            
+            //pdFF.SetField("fein", "36");
+            //pdFF.SetField("fein", "36");
 
 
             //pdFF.SetField("fein", "36");
@@ -176,11 +213,6 @@ namespace Payroll
             //pdFF.SetField("fein", "36");
             //pdFF.SetField("fein", "36");
             //pdFF.SetField("fein", "36");
-            //pdFF.SetField("fein", "36");
-
-
-
-
 
             pds.FormFlattening = false;
             pds.Close();
