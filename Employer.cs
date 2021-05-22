@@ -55,6 +55,7 @@ namespace Payroll
 
         public double CalcStateTax(int period)
         {
+            // calculate employer state withholding
             double stateTax = 0;
 
             for (int i = 0; i < EmpList.Count; i++)
@@ -65,6 +66,7 @@ namespace Payroll
 
         public double MonthlyFedWitholding(int period)
         {
+            // calculate total monthly withholding by employer
             double monthlyFedWithold = 0;
             double ssnTax = CalcSSNTax(period);
             double medTax = CalcMediTax(period);
@@ -73,37 +75,35 @@ namespace Payroll
             return monthlyFedWithold;
         }
 
+
+        public Dictionary<int, List<double>> CalcFedQuarterlyWitholding(int quarter)
+        {
+            // create dictionary and set the start and end periods
+            Dictionary<int, List<double>> quarterWithDic = new Dictionary<int, List<double>>();
+            int[] periodRange = GetPeriodDateRange(quarter);
+            int beginP = periodRange[0];
+            int endP = periodRange[1];     
+
+            for (int i = beginP; i <= endP; i++)
+            {
+                double fedWithold = CalcFedTax(i);
+                double ssWithold = CalcSSNTax(i);
+                double medWithhold = CalcMediTax(i);
+                List<double> tempList = new List<double>();
+                tempList.AddRange(new List<double> { Math.Round(fedWithold, 2), Math.Round(ssWithold * 2, 2), 
+                    Math.Round(medWithhold * 2, 2)});
+                quarterWithDic.Add(i, tempList);
+            }
+
+            return quarterWithDic;
+        }
+
+
         public Dictionary<string, List<double>> CalcQuarterlyStateWages(int quarter)
         {
             Dictionary<string, List<double>> quarterDic = new Dictionary<string, List<double>>();
 
-            Dictionary<int, int[]> monthlyDic = new Dictionary<int, int[]>();
-            monthlyDic.Add(1, new int[] { 1, 3 });
-            monthlyDic.Add(2, new int[] { 4, 6 });
-            monthlyDic.Add(3, new int[] { 7, 9 });
-            monthlyDic.Add(4, new int[] { 10, 12 });
-
-            Dictionary<int, int[]> semiMonthlyDic = new Dictionary<int, int[]>();
-            semiMonthlyDic.Add(1, new int[] { 1, 6 });
-            semiMonthlyDic.Add(2, new int[] { 7, 13 });
-            semiMonthlyDic.Add(3, new int[] { 14, 20 });
-            semiMonthlyDic.Add(4, new int[] { 21, 26 });
-
-            Dictionary<int, int[]> weeklyDic = new Dictionary<int, int[]>();
-            weeklyDic.Add(1, new int[] { 1, 13 });
-            weeklyDic.Add(2, new int[] { 14, 26 });
-            weeklyDic.Add(3, new int[] { 27, 39 });
-            weeklyDic.Add(4, new int[] { 40, 52 });
-
-            int[] periodRange = new int[2];
-
-            if (numPeriods == 12)            
-                periodRange = monthlyDic[quarter];            
-            else if (numPeriods == 26)            
-                periodRange = semiMonthlyDic[quarter];            
-            else if (numPeriods == 52)            
-                periodRange = weeklyDic[quarter];
-
+            int[] periodRange = GetPeriodDateRange(quarter);
             int beginP = periodRange[0];
             int endP = periodRange[1];
             
@@ -134,6 +134,39 @@ namespace Payroll
             }
 
             return quarterDic;
+        }
+
+        public int[] GetPeriodDateRange(int quarter)
+        {
+            // this will set the begin and end periods for the quarter selected
+            Dictionary<int, int[]> monthlyDic = new Dictionary<int, int[]>();
+            monthlyDic.Add(1, new int[] { 1, 3 });
+            monthlyDic.Add(2, new int[] { 4, 6 });
+            monthlyDic.Add(3, new int[] { 7, 9 });
+            monthlyDic.Add(4, new int[] { 10, 12 });
+
+            Dictionary<int, int[]> semiMonthlyDic = new Dictionary<int, int[]>();
+            semiMonthlyDic.Add(1, new int[] { 1, 6 });
+            semiMonthlyDic.Add(2, new int[] { 7, 13 });
+            semiMonthlyDic.Add(3, new int[] { 14, 20 });
+            semiMonthlyDic.Add(4, new int[] { 21, 26 });
+
+            Dictionary<int, int[]> weeklyDic = new Dictionary<int, int[]>();
+            weeklyDic.Add(1, new int[] { 1, 13 });
+            weeklyDic.Add(2, new int[] { 14, 26 });
+            weeklyDic.Add(3, new int[] { 27, 39 });
+            weeklyDic.Add(4, new int[] { 40, 52 });
+
+            int[] periodRange = new int[2];
+
+            if (numPeriods == 12)
+                periodRange = monthlyDic[quarter];
+            else if (numPeriods == 26)
+                periodRange = semiMonthlyDic[quarter];
+            else if (numPeriods == 52)
+                periodRange = weeklyDic[quarter];
+
+            return periodRange;
         }
 
     }

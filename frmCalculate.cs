@@ -140,9 +140,34 @@ namespace Payroll
             Employer emp = new Employer(WithHoldDic, EmpList, periods);
             int quarter = ddlQuarter.SelectedIndex + 1;
             Dictionary<string, List<double>> payDic = emp.CalcQuarterlyStateWages(quarter);
+            Dictionary<int, List<double>> withDic = emp.CalcFedQuarterlyWitholding(quarter);
+            int[] periodsRange = emp.GetPeriodDateRange(quarter);
+            int beginP = periodsRange[0];
+            int endP = periodsRange[1];
+            List<double> monthlyWithholdList = new List<double>();
+
+            for (int i = beginP; i <= endP; i++)
+            {
+                double monthlyWithhold = withDic[i].Sum();
+                monthlyWithholdList.Add(monthlyWithhold);
+            }
+
             double wages = payDic.Sum(x => x.Value[1]);
+            double totalFed = withDic.Sum(f => f.Value[0]);
+            double totalSSNTax = withDic.Sum(s => s.Value[1]);
+            double totalMedTax = withDic.Sum(m => m.Value[2]);
+            double totalMedAndSSN = withDic.Sum(x => x.Value[1] + x.Value[2]);
+            double totalTaxesBeforeAdj = withDic.Sum(x => x.Value[0] + x.Value[1] + x.Value[2]);
 
             string[] wagesSplit = SplitDollarAmounts(wages);
+            string[] totalFedSplit = SplitDollarAmounts(totalFed);
+            string[] totalSSNSplit = SplitDollarAmounts(totalSSNTax);
+            string[] totalMedSplit = SplitDollarAmounts(totalMedTax);
+            string[] totalMedAndSSNSplit = SplitDollarAmounts(totalMedAndSSN);
+            string[] totalTaxesAdjSplit = SplitDollarAmounts(totalTaxesBeforeAdj);
+            string[] firstMonth = SplitDollarAmounts(monthlyWithholdList[0]);
+            string[] secondMonth = SplitDollarAmounts(monthlyWithholdList[1]);
+            string[] thirdMonth = SplitDollarAmounts(monthlyWithholdList[2]);
 
             // read the pdf file and find the textfield values
             PdfReader pdr = new PdfReader(f941);
@@ -177,33 +202,71 @@ namespace Payroll
 
             pdFF.SetField("f1_13[0]", wagesSplit[0]);
             pdFF.SetField("f1_14[0]", wagesSplit[1]);
-
-
-
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-            //pdFF.SetField("f1_1[0]", "36");
-
+            pdFF.SetField("f1_15[0]", totalFedSplit[0]);
+            pdFF.SetField("f1_16[0]", totalFedSplit[1]);
+            pdFF.SetField("f1_17[0]", wagesSplit[0]);
+            pdFF.SetField("f1_18[0]", wagesSplit[1]);
+            pdFF.SetField("f1_19[0]", totalSSNSplit[0]);
+            pdFF.SetField("f1_20[0]", totalSSNSplit[1]);
+            pdFF.SetField("f1_33[0]", wagesSplit[0]);
+            pdFF.SetField("f1_34[0]", wagesSplit[1]);
+            pdFF.SetField("f1_35[0]", totalMedSplit[0]);
+            pdFF.SetField("f1_36[0]", totalMedSplit[1]);
+            pdFF.SetField("f1_41[0]", totalMedAndSSNSplit[0]);
+            pdFF.SetField("f1_42[0]", totalMedAndSSNSplit[1]);
+            pdFF.SetField("f1_45[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f1_46[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f1_53[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f1_54[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f2_1[0]", "CASCO (USA) INC");
+            pdFF.SetField("f2_2[0]", "36-4084647");
+            pdFF.SetField("f2_5[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f2_6[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f2_7[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f2_8[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("c2_2[1]", "2");
+            pdFF.SetField("f2_25[0]", firstMonth[0]);
+            pdFF.SetField("f2_26[0]", firstMonth[1]);
+            pdFF.SetField("f2_27[0]", secondMonth[0]);
+            pdFF.SetField("f2_28[0]", secondMonth[1]);
+            pdFF.SetField("f2_29[0]", thirdMonth[0]);
+            pdFF.SetField("f2_30[0]", thirdMonth[1]);
+            pdFF.SetField("f2_31[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f2_32[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f3_1[0]", "CASCO (USA) INC");
+            pdFF.SetField("f3_2[0]", "36-4084647");
+            pdFF.SetField("c3_3[0]", "1");
+            pdFF.SetField("f3_18[0]", "KENNETH LIN");
+            pdFF.SetField("f3_19[0]", "(630) 802-5485");
+            pdFF.SetField("f3_23[0]", "(630) 802-5498");
+            pdFF.SetField("c3_4[0]", "1");
+            pdFF.SetField("f3_24[0]", "KENNETH LIN");
+            pdFF.SetField("f3_25[0]", "P02226123");
+            pdFF.SetField("f3_26[0]", "KENNETH LIN");
+            pdFF.SetField("f3_28[0]", "4227 Colton Cir.");
+            pdFF.SetField("f3_29[0]", "(630) 802-5485");
+            pdFF.SetField("f3_30[0]", "Naperville");
+            pdFF.SetField("f3_31[0]", "IL");
+            pdFF.SetField("f3_32[0]", "60564");
             pds.FormFlattening = false;
             pds.Close();
         }
 
         private string[] SplitDollarAmounts(double dollar)
         {
-            string sDollar = dollar.ToString();
-            string[] parts = sDollar.Split('.');
+            string[] parts = new string[2];
+            string sDollar = Math.Round(dollar, 2).ToString();
+
+            if (!sDollar.Contains('.'))
+            {
+                parts[0] = sDollar;
+                parts[1] = "00";
+            }
+            else
+            {
+                parts = sDollar.Split('.');
+            }
+
             return parts;
         }
 
@@ -450,10 +513,11 @@ namespace Payroll
 
         private void tosTest_Click(object sender, EventArgs e)
         {
-            Employer emp = new Employer(WithHoldDic, EmpList, 12);
-            var x = emp.CalcQuarterlyStateWages(4);
-            double sum = x.Sum(v => v.Value[3]);
-            MessageBox.Show("HI");
+            double x = 325.268;
+
+            string[] test = SplitDollarAmounts(x);
+
+            MessageBox.Show("done");
         }
 
 
