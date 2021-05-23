@@ -332,6 +332,12 @@ namespace Payroll
             //    lstResults.Items.Add(de.ToString());
             //}
 
+            //string[] checkboxStates = pdFF.GetAppearanceStates("DiscussWithPreparer");
+            //for (int i = 0; i < checkboxStates.Length; i++)
+            //{
+            //    lstResults.Items.Add(checkboxStates[i]);
+            //}
+
             PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
             AcroFields pdFF = pds.AcroFields;
 
@@ -365,8 +371,14 @@ namespace Payroll
             pdFF.SetField("Title", "President");
             pdFF.SetField("areacode1", "630");
             pdFF.SetField("phonenumber1", "802-5498");
+            pdFF.SetField("DiscussWithPreparer", "a");
             pdFF.SetField("PreparerName", "Kenneth Lin");
+            pdFF.SetField("SelfEmployed", "a");
             pdFF.SetField("PTIN", "P02226123");
+            pdFF.SetField("FirmName", "Kenneth Lin, CPA");
+            pdFF.SetField("FirmAddress", "4227 Colton Cir. Naperville IL 60564");
+            pdFF.SetField("areacode2", "630");
+            pdFF.SetField("phonenumber2", "802-5485");
             pds.FormFlattening = false;
             pds.Close();
 
@@ -514,6 +526,101 @@ namespace Payroll
             ChangeStatusLabel(tosStatus, msg);
         }
 
+        private void tosbtnF940_Click(object sender, EventArgs e)
+        {
+            // open a save file dialog and prompt user to enter file path
+            SaveFileDialog saveWindow = new SaveFileDialog();
+            saveWindow.Title = "Export data to PDF";
+            saveWindow.Filter = "PDF (.pdf)|*.pdf";
+            saveWindow.ShowDialog();
+
+            if (saveWindow.FileName == "")
+                return;
+
+            string fileName = saveWindow.FileName;
+
+            int periods = GetNumPayPeriods();
+            Employer emp = new Employer(WithHoldDic, EmpList, periods);
+            List<double> FutaList = emp.CalcFUTA();
+            double totalWages = FutaList[0];
+            double excessWages = FutaList[1];
+            double taxableWages = FutaList[2];
+            double futaTax = Math.Round(taxableWages * 0.006, 2);
+            string[] totalWagesSplit = SplitDollarAmounts(totalWages);
+            string[] excessWagesSplit = SplitDollarAmounts(excessWages);
+            string[] taxableWagesSplit = SplitDollarAmounts(taxableWages);
+            string[] futaTaxSplit = SplitDollarAmounts(futaTax);
+
+
+            // read the pdf file and find the textfield values
+            PdfReader pdr = new PdfReader(f940);
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var de in pdr.AcroFields.Fields)
+            {
+                lstResults.Items.Add(de.ToString());
+            }
+
+            // open a PdfStamper and write to the pdf and save it to file path
+            PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
+            AcroFields pdFF = pds.AcroFields;
+
+            pdFF.SetField("f1_1[0]", "3");
+            pdFF.SetField("f1_2[0]", "6");
+            pdFF.SetField("f1_3[0]", "4");
+            pdFF.SetField("f1_4[0]", "0");
+            pdFF.SetField("f1_5[0]", "8");
+            pdFF.SetField("f1_6[0]", "4");
+            pdFF.SetField("f1_7[0]", "6");
+            pdFF.SetField("f1_8[0]", "4");
+            pdFF.SetField("f1_9[0]", "7");
+            pdFF.SetField("f1_10[0]", "CASCO (USA) INC");
+            pdFF.SetField("f1_12[0]", "1300 IROQUOIS, UNIT 245");
+            pdFF.SetField("f1_13[0]", "NAPERVILLE");
+            pdFF.SetField("f1_14[0]", "IL");
+            pdFF.SetField("f1_15[0]", "60563");
+            pdFF.SetField("f1_19[0]", "I");
+            pdFF.SetField("f1_20[0]", "L");
+            pdFF.SetField("f1_21[0]", totalWagesSplit[0]);
+            pdFF.SetField("f1_22[0]", totalWagesSplit[1]);
+
+            pdFF.SetField("f1_25[0]", excessWagesSplit[0]);
+            pdFF.SetField("f1_26[0]", excessWagesSplit[1]);
+            pdFF.SetField("f1_27[0]", excessWagesSplit[0]);
+            pdFF.SetField("f1_28[0]", excessWagesSplit[1]);
+            pdFF.SetField("f1_29[0]", taxableWagesSplit[0]);
+            pdFF.SetField("f1_30[0]", taxableWagesSplit[1]);
+            pdFF.SetField("f1_31[0]", futaTaxSplit[0]);
+            pdFF.SetField("f1_32[0]", futaTaxSplit[1]);
+            pdFF.SetField("f1_39[0]", futaTaxSplit[0]);
+            pdFF.SetField("f1_40[0]", futaTaxSplit[1]);
+            pdFF.SetField("f1_41[0]", futaTaxSplit[0]);
+            pdFF.SetField("f1_42[0]", futaTaxSplit[1]);
+
+            pdFF.SetField("f2_1[0]", "CASCO (USA) INC");
+            pdFF.SetField("f2_2[0]", "36-4084647");
+            pdFF.SetField("c2_1[0]", "Yes");
+            pdFF.SetField("f2_13[0]", "KENNETH LIN");
+            pdFF.SetField("f2_14[0]", "(630) 802-5485");
+            pdFF.SetField("f2_16[0]", "LU LIN");
+            pdFF.SetField("f2_17[0]", "PRESIDENT");
+            pdFF.SetField("f2_18[0]", "(630) 802-5498");
+            pdFF.SetField("c2_2[0]", "1");
+            pdFF.SetField("f2_19[0]", "KENNETH LIN");
+            pdFF.SetField("f2_20[0]", "P02226123");
+            pdFF.SetField("f2_21[0]", "KENNETH LIN");
+            pdFF.SetField("f2_23[0]", "4227 COLTON CIR");
+            pdFF.SetField("f2_24[0]", "(630) 802-5485");
+            pdFF.SetField("f2_25[0]", "NAPERVILLE");
+            pdFF.SetField("f2_26[0]", "IL");
+            pdFF.SetField("f2_27[0]", "60564");
+            pds.FormFlattening = false;
+            pds.Close();
+
+            string msg = "Form Fed-940 has been exported to " + fileName;
+            ChangeStatusLabel(tosStatus, msg);
+        }
+
         private bool CheckDDL(ComboBox ddl, string msg)
         {
             // check if drop down list has been selected
@@ -643,6 +750,7 @@ namespace Payroll
             var x = emp.CalcTotalQuarterlyWages(1);
             MessageBox.Show("hi");
         }
+
 
     }
 }

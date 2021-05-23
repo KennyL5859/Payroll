@@ -146,8 +146,28 @@ namespace Payroll
                     Math.Round(taxDue, 2)});
                 quarterDic.Add(name, salList);
             }
-
             return quarterDic;
+        }
+
+        public List<double> CalcFUTA()
+        {
+            double totalWages = 0;
+            double excessWages = 0;    
+
+            for (int i = 0; i < EmpList.Count; i++)
+            {
+                double yearlyWages =  EmpList[i].CalcQuarterlySalary(numPeriods, 1, numPeriods);
+
+                if (yearlyWages > 7000)
+                    excessWages += yearlyWages - 7000;
+
+                totalWages += yearlyWages;
+            }
+
+            double taxableWages = totalWages - excessWages;
+            List<double> FutaList = new List<double>();
+            FutaList.AddRange(new List<double>() { totalWages, excessWages, taxableWages });
+            return FutaList;
         }
 
         public int[] GetPeriodDateRange(int quarter)

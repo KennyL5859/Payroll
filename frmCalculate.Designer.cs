@@ -52,6 +52,7 @@ namespace Payroll
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.Timer = new System.Windows.Forms.Timer(this.components);
+            this.tosbtnF940 = new System.Windows.Forms.ToolStripMenuItem();
             this.tosMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -96,7 +97,8 @@ namespace Payroll
             this.tosddbtnPDF.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tosddbtnPDF.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tosmnubtnFed941,
-            this.tosmnuBtnIL941});
+            this.tosmnuBtnIL941,
+            this.tosbtnF940});
             this.tosddbtnPDF.Image = ((System.Drawing.Image)(resources.GetObject("tosddbtnPDF.Image")));
             this.tosddbtnPDF.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosddbtnPDF.Name = "tosddbtnPDF";
@@ -106,14 +108,14 @@ namespace Payroll
             // tosmnubtnFed941
             // 
             this.tosmnubtnFed941.Name = "tosmnubtnFed941";
-            this.tosmnubtnFed941.Size = new System.Drawing.Size(180, 34);
+            this.tosmnubtnFed941.Size = new System.Drawing.Size(270, 34);
             this.tosmnubtnFed941.Text = "Fed-941";
             this.tosmnubtnFed941.Click += new System.EventHandler(this.tosmnubtnFed941_Click);
             // 
             // tosmnuBtnIL941
             // 
             this.tosmnuBtnIL941.Name = "tosmnuBtnIL941";
-            this.tosmnuBtnIL941.Size = new System.Drawing.Size(180, 34);
+            this.tosmnuBtnIL941.Size = new System.Drawing.Size(270, 34);
             this.tosmnuBtnIL941.Text = "IL-941";
             this.tosmnuBtnIL941.Click += new System.EventHandler(this.tosmnuBtnIL941_Click);
             // 
@@ -279,6 +281,13 @@ namespace Payroll
             // 
             this.Timer.Interval = 1000;
             // 
+            // tosbtnF940
+            // 
+            this.tosbtnF940.Name = "tosbtnF940";
+            this.tosbtnF940.Size = new System.Drawing.Size(270, 34);
+            this.tosbtnF940.Text = "Fed-940";
+            this.tosbtnF940.Click += new System.EventHandler(this.tosbtnF940_Click);
+            // 
             // frmCalculate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -333,5 +342,6 @@ namespace Payroll
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tosStatus;
         private System.Windows.Forms.Timer Timer;
+        private System.Windows.Forms.ToolStripMenuItem tosbtnF940;
     }
 }
