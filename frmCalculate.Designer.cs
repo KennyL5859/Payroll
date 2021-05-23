@@ -29,12 +29,14 @@ namespace Payroll
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCalculate));
             this.tosMain = new System.Windows.Forms.ToolStrip();
             this.tosbtnCalculate = new System.Windows.Forms.ToolStripButton();
             this.tosbtnExcel = new System.Windows.Forms.ToolStripButton();
             this.tosddbtnPDF = new System.Windows.Forms.ToolStripDropDownButton();
             this.tosmnubtnFed941 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tosmnuBtnIL941 = new System.Windows.Forms.ToolStripMenuItem();
             this.tosTest = new System.Windows.Forms.ToolStripButton();
             this.lblEmployee = new System.Windows.Forms.Label();
             this.lblPayPeriod = new System.Windows.Forms.Label();
@@ -49,7 +51,7 @@ namespace Payroll
             this.lstResults = new System.Windows.Forms.ListBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tosmnuBtnIL941 = new System.Windows.Forms.ToolStripMenuItem();
+            this.Timer = new System.Windows.Forms.Timer(this.components);
             this.tosMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -99,14 +101,21 @@ namespace Payroll
             this.tosddbtnPDF.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosddbtnPDF.Name = "tosddbtnPDF";
             this.tosddbtnPDF.Size = new System.Drawing.Size(42, 28);
-            this.tosddbtnPDF.Text = "toolStripDropDownButton1";
+            this.tosddbtnPDF.Text = "Export to PDF";
             // 
             // tosmnubtnFed941
             // 
             this.tosmnubtnFed941.Name = "tosmnubtnFed941";
-            this.tosmnubtnFed941.Size = new System.Drawing.Size(270, 34);
+            this.tosmnubtnFed941.Size = new System.Drawing.Size(180, 34);
             this.tosmnubtnFed941.Text = "Fed-941";
             this.tosmnubtnFed941.Click += new System.EventHandler(this.tosmnubtnFed941_Click);
+            // 
+            // tosmnuBtnIL941
+            // 
+            this.tosmnuBtnIL941.Name = "tosmnuBtnIL941";
+            this.tosmnuBtnIL941.Size = new System.Drawing.Size(180, 34);
+            this.tosmnuBtnIL941.Text = "IL-941";
+            this.tosmnuBtnIL941.Click += new System.EventHandler(this.tosmnuBtnIL941_Click);
             // 
             // tosTest
             // 
@@ -257,7 +266,6 @@ namespace Payroll
             this.tosStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 696);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 14, 0);
             this.statusStrip1.Size = new System.Drawing.Size(836, 22);
             this.statusStrip1.TabIndex = 12;
             this.statusStrip1.Text = "statusStrip1";
@@ -265,15 +273,11 @@ namespace Payroll
             // tosStatus
             // 
             this.tosStatus.Name = "tosStatus";
-            this.tosStatus.RightToLeftAutoMirrorImage = true;
             this.tosStatus.Size = new System.Drawing.Size(0, 15);
             // 
-            // tosmnuBtnIL941
+            // Timer
             // 
-            this.tosmnuBtnIL941.Name = "tosmnuBtnIL941";
-            this.tosmnuBtnIL941.Size = new System.Drawing.Size(270, 34);
-            this.tosmnuBtnIL941.Text = "IL-941";
-            this.tosmnuBtnIL941.Click += new System.EventHandler(this.tosmnuBtnIL941_Click);
+            this.Timer.Interval = 1000;
             // 
             // frmCalculate
             // 
@@ -323,10 +327,11 @@ namespace Payroll
         private System.Windows.Forms.Label lblPayFreq;
         private System.Windows.Forms.ListBox lstResults;
         private System.Windows.Forms.ToolStripDropDownButton tosddbtnPDF;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel tosStatus;
         private System.Windows.Forms.ToolStripButton tosTest;
         private System.Windows.Forms.ToolStripMenuItem tosmnubtnFed941;
         private System.Windows.Forms.ToolStripMenuItem tosmnuBtnIL941;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel tosStatus;
+        private System.Windows.Forms.Timer Timer;
     }
 }

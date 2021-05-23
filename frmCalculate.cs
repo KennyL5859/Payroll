@@ -101,9 +101,7 @@ namespace Payroll
             lstResults.Items.Add("-------".PadLeft(30) + "-------".PadLeft(20));
             lstResults.Items.Add("Net Pay" + netPay.ToString().PadLeft(23) +
                 netPayCul.ToString().PadLeft(20));
-        }        
-
-     
+        }     
 
         private void tosbtnExcel_Click(object sender, EventArgs e)
         {
@@ -120,239 +118,11 @@ namespace Payroll
             WriteToExcel(fileName);       
         }
 
-        private void tosmnuBtnIL941_Click(object sender, EventArgs e)
-        {
-            ClearDDLColors();
-
-            if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
-                return;
-
-            SaveFileDialog saveWindow = new SaveFileDialog();
-            saveWindow.Title = "Export data to PDF";
-            saveWindow.Filter = "PDF (.pdf)|*.pdf";
-            saveWindow.ShowDialog();
-
-            if (saveWindow.FileName == "")
-                return;
-
-            string fileName = saveWindow.FileName;
-            int periods = GetNumPayPeriods();
-            int quarter = ddlQuarter.SelectedIndex + 1;
-            Employer emp = new Employer(WithHoldDic, EmpList, periods);
-            double line1 = emp.CalcTotalQuarterlyWages(quarter);
-            int[] periodsRange = emp.GetPeriodDateRange(quarter);
-            int beginP = periodsRange[0];
-            int endP = periodsRange[1];
-            List<double> monthlyTax = new List<double>(); 
-
-            for (int i = beginP; i <= endP; i++)            
-                monthlyTax.Add(emp.CalcStateTax(i));
-
-            double totalWithhold = monthlyTax.Sum();
-
-            string[] firstMonth = SplitDollarAmounts(monthlyTax[0]);
-            string[] secondMonth = SplitDollarAmounts(monthlyTax[1]);
-            string[] thirdMonth = SplitDollarAmounts(monthlyTax[2]);
-
-
-            // read the pdf file and find the textfield values
-            PdfReader pdr = new PdfReader(i941);
-
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var de in pdr.AcroFields.Fields)
-            {
-                lstResults.Items.Add(de.ToString());
-            }
-
-            PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
-            AcroFields pdFF = pds.AcroFields;
-
-            pdFF.SetField("fein", "36");
-            pdFF.SetField("fein1", "4084647");
-            pdFF.SetField("name", "CASCO USA INC");
-            pdFF.SetField("address", "1300 IROQUOIS AVE, SUITE 245");
-            pdFF.SetField("city", "NAPERVILLE");
-            pdFF.SetField("state", "IL");
-            pdFF.SetField("zip", "60563");
-            pdFF.SetField("checkbox4", quarter.ToString());
-            pdFF.SetField("w2", "0");
-            pdFF.SetField("Form1099", "0");
-            pdFF.SetField("line1", line1.ToString());
-            pdFF.SetField("Month1Day28", firstMonth[0]);
-            pdFF.SetField("Month1Day28Cents", firstMonth[1]);
-            pdFF.SetField("Month2Day28", secondMonth[0]);
-            pdFF.SetField("Month2Day28Cents", secondMonth[1]);
-            pdFF.SetField("Month3Day28", thirdMonth[0]);
-            pdFF.SetField("Month3Day28Cents", thirdMonth[1]);
-
-            pdFF.SetField("Month1Total", firstMonth[0]);
-            pdFF.SetField("Month1TotalCents", firstMonth[1]);
-            pdFF.SetField("Month2Total", secondMonth[0]);
-            pdFF.SetField("Month2TotalCents", secondMonth[1]);
-            pdFF.SetField("Month3Total", thirdMonth[0]);
-            pdFF.SetField("Month3TotalCents", thirdMonth[1]);
-            pdFF.SetField("line3", "0.00");
-            pdFF.SetField("line4", totalWithhold.ToString());
-            pdFF.SetField("line5", totalWithhold.ToString());
-            pdFF.SetField("line6", "0.00");
-
-            pdFF.SetField("Title", "President");
-            pdFF.SetField("areacode1", "630");
-            pdFF.SetField("phonenumber1", "802-5498");
-
-
-            
-            //pdFF.SetField("fein", "36");
-            //pdFF.SetField("fein", "36");
-
-
-            //pdFF.SetField("fein", "36");
-            //pdFF.SetField("fein", "36");
-            //pdFF.SetField("fein", "36");
-            //pdFF.SetField("fein", "36");
-            //pdFF.SetField("fein", "36");
-            //pdFF.SetField("fein", "36");
-
-            pds.FormFlattening = false;
-            pds.Close();
-
-        }
-
-        private void tosmnubtnFed941_Click(object sender, EventArgs e)
-        {
-            ClearDDLColors();
-
-            if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
-                return;
-
-            SaveFileDialog saveWindow = new SaveFileDialog();
-            saveWindow.Title = "Export data to PDF";
-            saveWindow.Filter = "PDF (.pdf)|*.pdf";
-            saveWindow.ShowDialog();
-
-            if (saveWindow.FileName == "")
-                return;
-
-            string fileName = saveWindow.FileName;
-            int periods = GetNumPayPeriods();
-            Employer emp = new Employer(WithHoldDic, EmpList, periods);
-            int quarter = ddlQuarter.SelectedIndex + 1;
-            Dictionary<string, List<double>> payDic = emp.CalcQuarterlyStateWages(quarter);
-            Dictionary<int, List<double>> withDic = emp.CalcFedQuarterlyWitholding(quarter);
-            int[] periodsRange = emp.GetPeriodDateRange(quarter);
-            int beginP = periodsRange[0];
-            int endP = periodsRange[1];
-            List<double> monthlyWithholdList = new List<double>();
-
-            for (int i = beginP; i <= endP; i++)
-            {
-                double monthlyWithhold = withDic[i].Sum();
-                monthlyWithholdList.Add(monthlyWithhold);
-            }
-
-            double wages = payDic.Sum(x => x.Value[1]);
-            double totalFed = withDic.Sum(f => f.Value[0]);
-            double totalSSNTax = withDic.Sum(s => s.Value[1]);
-            double totalMedTax = withDic.Sum(m => m.Value[2]);
-            double totalMedAndSSN = withDic.Sum(x => x.Value[1] + x.Value[2]);
-            double totalTaxesBeforeAdj = withDic.Sum(x => x.Value[0] + x.Value[1] + x.Value[2]);
-
-            string[] wagesSplit = SplitDollarAmounts(wages);
-            string[] totalFedSplit = SplitDollarAmounts(totalFed);
-            string[] totalSSNSplit = SplitDollarAmounts(totalSSNTax);
-            string[] totalMedSplit = SplitDollarAmounts(totalMedTax);
-            string[] totalMedAndSSNSplit = SplitDollarAmounts(totalMedAndSSN);
-            string[] totalTaxesAdjSplit = SplitDollarAmounts(totalTaxesBeforeAdj);
-            string[] firstMonth = SplitDollarAmounts(monthlyWithholdList[0]);
-            string[] secondMonth = SplitDollarAmounts(monthlyWithholdList[1]);
-            string[] thirdMonth = SplitDollarAmounts(monthlyWithholdList[2]);
-
-            // read the pdf file and find the textfield values
-            PdfReader pdr = new PdfReader(f941);
-            //StringBuilder sb = new StringBuilder();
-
-            //foreach (var de in pdr.AcroFields.Fields)
-            //{      
-            //    lstResults.Items.Add(de.ToString());
-            //}
-
-            PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
-            AcroFields pdFF = pds.AcroFields;
-
-            pdFF.SetField("f1_1[0]", "36");
-            pdFF.SetField("f1_2[0]", "4084647");
-            pdFF.SetField("f1_3[0]", "CASCO (USA) INC");
-            pdFF.SetField("f1_5[0]", "1300 IROQUOIS, UNIT 245");
-            pdFF.SetField("f1_6[0]", "NAPERVILLE");
-            pdFF.SetField("f1_7[0]", "IL");
-            pdFF.SetField("f1_8[0]", "60653");
-
-            if (ddlQuarter.SelectedIndex == 0)
-                pdFF.SetField("c1_1[0]", "1");            
-            else if (ddlQuarter.SelectedIndex == 1)
-                pdFF.SetField("c1_1[1]", "2");
-            else if (ddlQuarter.SelectedIndex == 2)
-                pdFF.SetField("c1_1[2]", "3");
-            else if (ddlQuarter.SelectedIndex == 3)
-                pdFF.SetField("c1_1[3]", "4");
-
-            pdFF.SetField("f1_12[0]", EmpList.Count.ToString());
-
-            pdFF.SetField("f1_13[0]", wagesSplit[0]);
-            pdFF.SetField("f1_14[0]", wagesSplit[1]);
-            pdFF.SetField("f1_15[0]", totalFedSplit[0]);
-            pdFF.SetField("f1_16[0]", totalFedSplit[1]);
-            pdFF.SetField("f1_17[0]", wagesSplit[0]);
-            pdFF.SetField("f1_18[0]", wagesSplit[1]);
-            pdFF.SetField("f1_19[0]", totalSSNSplit[0]);
-            pdFF.SetField("f1_20[0]", totalSSNSplit[1]);
-            pdFF.SetField("f1_33[0]", wagesSplit[0]);
-            pdFF.SetField("f1_34[0]", wagesSplit[1]);
-            pdFF.SetField("f1_35[0]", totalMedSplit[0]);
-            pdFF.SetField("f1_36[0]", totalMedSplit[1]);
-            pdFF.SetField("f1_41[0]", totalMedAndSSNSplit[0]);
-            pdFF.SetField("f1_42[0]", totalMedAndSSNSplit[1]);
-            pdFF.SetField("f1_45[0]", totalTaxesAdjSplit[0]);
-            pdFF.SetField("f1_46[0]", totalTaxesAdjSplit[1]);
-            pdFF.SetField("f1_53[0]", totalTaxesAdjSplit[0]);
-            pdFF.SetField("f1_54[0]", totalTaxesAdjSplit[1]);
-            pdFF.SetField("f2_1[0]", "CASCO (USA) INC");
-            pdFF.SetField("f2_2[0]", "36-4084647");
-            pdFF.SetField("f2_5[0]", totalTaxesAdjSplit[0]);
-            pdFF.SetField("f2_6[0]", totalTaxesAdjSplit[1]);
-            pdFF.SetField("f2_7[0]", totalTaxesAdjSplit[0]);
-            pdFF.SetField("f2_8[0]", totalTaxesAdjSplit[1]);
-            pdFF.SetField("c2_2[1]", "2");
-            pdFF.SetField("f2_25[0]", firstMonth[0]);
-            pdFF.SetField("f2_26[0]", firstMonth[1]);
-            pdFF.SetField("f2_27[0]", secondMonth[0]);
-            pdFF.SetField("f2_28[0]", secondMonth[1]);
-            pdFF.SetField("f2_29[0]", thirdMonth[0]);
-            pdFF.SetField("f2_30[0]", thirdMonth[1]);
-            pdFF.SetField("f2_31[0]", totalTaxesAdjSplit[0]);
-            pdFF.SetField("f2_32[0]", totalTaxesAdjSplit[1]);
-            pdFF.SetField("f3_1[0]", "CASCO (USA) INC");
-            pdFF.SetField("f3_2[0]", "36-4084647");
-            pdFF.SetField("c3_3[0]", "1");
-            pdFF.SetField("f3_18[0]", "KENNETH LIN");
-            pdFF.SetField("f3_19[0]", "(630) 802-5485");
-            pdFF.SetField("f3_23[0]", "(630) 802-5498");
-            pdFF.SetField("c3_4[0]", "1");
-            pdFF.SetField("f3_24[0]", "KENNETH LIN");
-            pdFF.SetField("f3_25[0]", "P02226123");
-            pdFF.SetField("f3_26[0]", "KENNETH LIN");
-            pdFF.SetField("f3_28[0]", "4227 Colton Cir.");
-            pdFF.SetField("f3_29[0]", "(630) 802-5485");
-            pdFF.SetField("f3_30[0]", "Naperville");
-            pdFF.SetField("f3_31[0]", "IL");
-            pdFF.SetField("f3_32[0]", "60564");
-            pds.FormFlattening = false;
-            pds.Close();
-        }
+      
 
         private string[] SplitDollarAmounts(double dollar)
         {
+            // convert $12.33 to [12, 33]
             string[] parts = new string[2];
             string sDollar = Math.Round(dollar, 2).ToString();
 
@@ -383,7 +153,9 @@ namespace Payroll
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
 
-            tosStatus.Text = "Excel file saved to " + file.ToString();
+            // show file path for 5 seconds
+            string msg = "Excel file saved to " + file.ToString();
+            ChangeStatusLabel(tosStatus, msg);
         }
 
         private void WriteStateSummary(Excel.Workbook xlWorkbook)
@@ -528,8 +300,231 @@ namespace Payroll
             }
         }
 
+        private void tosmnuBtnIL941_Click(object sender, EventArgs e)
+        {
+            ClearDDLColors();
+
+            if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
+                return;
+
+            SaveFileDialog saveWindow = new SaveFileDialog();
+            saveWindow.Title = "Export data to PDF";
+            saveWindow.Filter = "PDF (.pdf)|*.pdf";
+            saveWindow.ShowDialog();
+
+            if (saveWindow.FileName == "")
+                return;
+
+            string fileName = saveWindow.FileName;
+            int periods = GetNumPayPeriods();
+            int quarter = ddlQuarter.SelectedIndex + 1;
+            Employer emp = new Employer(WithHoldDic, EmpList, periods);
+            double line1 = emp.CalcTotalQuarterlyWages(quarter);
+            int[] periodsRange = emp.GetPeriodDateRange(quarter);
+            int beginP = periodsRange[0];
+            int endP = periodsRange[1];
+            List<double> monthlyTax = new List<double>();
+
+            for (int i = beginP; i <= endP; i++)
+                monthlyTax.Add(emp.CalcStateTax(i));
+
+            double totalWithhold = monthlyTax.Sum();
+
+            string[] firstMonth = SplitDollarAmounts(monthlyTax[0]);
+            string[] secondMonth = SplitDollarAmounts(monthlyTax[1]);
+            string[] thirdMonth = SplitDollarAmounts(monthlyTax[2]);
+
+
+            // read the pdf file and find the textfield values
+            PdfReader pdr = new PdfReader(i941);
+
+            //StringBuilder sb = new StringBuilder();
+            //foreach (var de in pdr.AcroFields.Fields)
+            //{
+            //    lstResults.Items.Add(de.ToString());
+            //}
+
+            PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
+            AcroFields pdFF = pds.AcroFields;
+
+            pdFF.SetField("fein", "36");
+            pdFF.SetField("fein1", "4084647");
+            pdFF.SetField("name", "CASCO USA INC");
+            pdFF.SetField("address", "1300 IROQUOIS AVE, SUITE 245");
+            pdFF.SetField("city", "NAPERVILLE");
+            pdFF.SetField("state", "IL");
+            pdFF.SetField("zip", "60563");
+            pdFF.SetField("checkbox4", quarter.ToString());
+            pdFF.SetField("w2", "0");
+            pdFF.SetField("Form1099", "0");
+            pdFF.SetField("line1", line1.ToString());
+            pdFF.SetField("Month1Day28", firstMonth[0]);
+            pdFF.SetField("Month1Day28Cents", firstMonth[1]);
+            pdFF.SetField("Month2Day28", secondMonth[0]);
+            pdFF.SetField("Month2Day28Cents", secondMonth[1]);
+            pdFF.SetField("Month3Day28", thirdMonth[0]);
+            pdFF.SetField("Month3Day28Cents", thirdMonth[1]);
+            pdFF.SetField("Month1Total", firstMonth[0]);
+            pdFF.SetField("Month1TotalCents", firstMonth[1]);
+            pdFF.SetField("Month2Total", secondMonth[0]);
+            pdFF.SetField("Month2TotalCents", secondMonth[1]);
+            pdFF.SetField("Month3Total", thirdMonth[0]);
+            pdFF.SetField("Month3TotalCents", thirdMonth[1]);
+            pdFF.SetField("line3", "0.00");
+            pdFF.SetField("line4", totalWithhold.ToString());
+            pdFF.SetField("line5", totalWithhold.ToString());
+            pdFF.SetField("line6", "0.00");
+            pdFF.SetField("Title", "President");
+            pdFF.SetField("areacode1", "630");
+            pdFF.SetField("phonenumber1", "802-5498");
+            pdFF.SetField("PreparerName", "Kenneth Lin");
+            pdFF.SetField("PTIN", "P02226123");
+            pds.FormFlattening = false;
+            pds.Close();
+
+            string msg = "Form I941 have been exported to " + fileName;
+            ChangeStatusLabel(tosStatus, msg);
+
+        }
+
+        private void tosmnubtnFed941_Click(object sender, EventArgs e)
+        {
+            ClearDDLColors();
+
+            if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
+                return;
+
+            SaveFileDialog saveWindow = new SaveFileDialog();
+            saveWindow.Title = "Export data to PDF";
+            saveWindow.Filter = "PDF (.pdf)|*.pdf";
+            saveWindow.ShowDialog();
+
+            if (saveWindow.FileName == "")
+                return;
+
+            string fileName = saveWindow.FileName;
+            int periods = GetNumPayPeriods();
+            Employer emp = new Employer(WithHoldDic, EmpList, periods);
+            int quarter = ddlQuarter.SelectedIndex + 1;
+            Dictionary<string, List<double>> payDic = emp.CalcQuarterlyStateWages(quarter);
+            Dictionary<int, List<double>> withDic = emp.CalcFedQuarterlyWitholding(quarter);
+            int[] periodsRange = emp.GetPeriodDateRange(quarter);
+            int beginP = periodsRange[0];
+            int endP = periodsRange[1];
+            List<double> monthlyWithholdList = new List<double>();
+
+            for (int i = beginP; i <= endP; i++)
+            {
+                double monthlyWithhold = withDic[i].Sum();
+                monthlyWithholdList.Add(monthlyWithhold);
+            }
+
+            double wages = payDic.Sum(x => x.Value[1]);
+            double totalFed = withDic.Sum(f => f.Value[0]);
+            double totalSSNTax = withDic.Sum(s => s.Value[1]);
+            double totalMedTax = withDic.Sum(m => m.Value[2]);
+            double totalMedAndSSN = withDic.Sum(x => x.Value[1] + x.Value[2]);
+            double totalTaxesBeforeAdj = withDic.Sum(x => x.Value[0] + x.Value[1] + x.Value[2]);
+
+            string[] wagesSplit = SplitDollarAmounts(wages);
+            string[] totalFedSplit = SplitDollarAmounts(totalFed);
+            string[] totalSSNSplit = SplitDollarAmounts(totalSSNTax);
+            string[] totalMedSplit = SplitDollarAmounts(totalMedTax);
+            string[] totalMedAndSSNSplit = SplitDollarAmounts(totalMedAndSSN);
+            string[] totalTaxesAdjSplit = SplitDollarAmounts(totalTaxesBeforeAdj);
+            string[] firstMonth = SplitDollarAmounts(monthlyWithholdList[0]);
+            string[] secondMonth = SplitDollarAmounts(monthlyWithholdList[1]);
+            string[] thirdMonth = SplitDollarAmounts(monthlyWithholdList[2]);
+
+            // read the pdf file and find the textfield values
+            PdfReader pdr = new PdfReader(f941);
+            //StringBuilder sb = new StringBuilder();
+
+            //foreach (var de in pdr.AcroFields.Fields)
+            //{      
+            //    lstResults.Items.Add(de.ToString());
+            //}
+
+            PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
+            AcroFields pdFF = pds.AcroFields;
+
+            pdFF.SetField("f1_1[0]", "36");
+            pdFF.SetField("f1_2[0]", "4084647");
+            pdFF.SetField("f1_3[0]", "CASCO (USA) INC");
+            pdFF.SetField("f1_5[0]", "1300 IROQUOIS, UNIT 245");
+            pdFF.SetField("f1_6[0]", "NAPERVILLE");
+            pdFF.SetField("f1_7[0]", "IL");
+            pdFF.SetField("f1_8[0]", "60653");
+
+            if (ddlQuarter.SelectedIndex == 0)
+                pdFF.SetField("c1_1[0]", "1");
+            else if (ddlQuarter.SelectedIndex == 1)
+                pdFF.SetField("c1_1[1]", "2");
+            else if (ddlQuarter.SelectedIndex == 2)
+                pdFF.SetField("c1_1[2]", "3");
+            else if (ddlQuarter.SelectedIndex == 3)
+                pdFF.SetField("c1_1[3]", "4");
+
+            pdFF.SetField("f1_12[0]", EmpList.Count.ToString());
+
+            pdFF.SetField("f1_13[0]", wagesSplit[0]);
+            pdFF.SetField("f1_14[0]", wagesSplit[1]);
+            pdFF.SetField("f1_15[0]", totalFedSplit[0]);
+            pdFF.SetField("f1_16[0]", totalFedSplit[1]);
+            pdFF.SetField("f1_17[0]", wagesSplit[0]);
+            pdFF.SetField("f1_18[0]", wagesSplit[1]);
+            pdFF.SetField("f1_19[0]", totalSSNSplit[0]);
+            pdFF.SetField("f1_20[0]", totalSSNSplit[1]);
+            pdFF.SetField("f1_33[0]", wagesSplit[0]);
+            pdFF.SetField("f1_34[0]", wagesSplit[1]);
+            pdFF.SetField("f1_35[0]", totalMedSplit[0]);
+            pdFF.SetField("f1_36[0]", totalMedSplit[1]);
+            pdFF.SetField("f1_41[0]", totalMedAndSSNSplit[0]);
+            pdFF.SetField("f1_42[0]", totalMedAndSSNSplit[1]);
+            pdFF.SetField("f1_45[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f1_46[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f1_53[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f1_54[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f2_1[0]", "CASCO (USA) INC");
+            pdFF.SetField("f2_2[0]", "36-4084647");
+            pdFF.SetField("f2_5[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f2_6[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f2_7[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f2_8[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("c2_2[1]", "2");
+            pdFF.SetField("f2_25[0]", firstMonth[0]);
+            pdFF.SetField("f2_26[0]", firstMonth[1]);
+            pdFF.SetField("f2_27[0]", secondMonth[0]);
+            pdFF.SetField("f2_28[0]", secondMonth[1]);
+            pdFF.SetField("f2_29[0]", thirdMonth[0]);
+            pdFF.SetField("f2_30[0]", thirdMonth[1]);
+            pdFF.SetField("f2_31[0]", totalTaxesAdjSplit[0]);
+            pdFF.SetField("f2_32[0]", totalTaxesAdjSplit[1]);
+            pdFF.SetField("f3_1[0]", "CASCO (USA) INC");
+            pdFF.SetField("f3_2[0]", "36-4084647");
+            pdFF.SetField("c3_3[0]", "1");
+            pdFF.SetField("f3_18[0]", "KENNETH LIN");
+            pdFF.SetField("f3_19[0]", "(630) 802-5485");
+            pdFF.SetField("f3_23[0]", "(630) 802-5498");
+            pdFF.SetField("c3_4[0]", "1");
+            pdFF.SetField("f3_24[0]", "KENNETH LIN");
+            pdFF.SetField("f3_25[0]", "P02226123");
+            pdFF.SetField("f3_26[0]", "KENNETH LIN");
+            pdFF.SetField("f3_28[0]", "4227 Colton Cir.");
+            pdFF.SetField("f3_29[0]", "(630) 802-5485");
+            pdFF.SetField("f3_30[0]", "Naperville");
+            pdFF.SetField("f3_31[0]", "IL");
+            pdFF.SetField("f3_32[0]", "60564");
+            pds.FormFlattening = false;
+            pds.Close();
+
+            string msg = "Form F941 have been exported to " + fileName;
+            ChangeStatusLabel(tosStatus, msg);
+        }
+
         private bool CheckDDL(ComboBox ddl, string msg)
         {
+            // check if drop down list has been selected
             if (ddl.SelectedIndex == -1)
             {
                 MessageBox.Show(msg);
@@ -619,6 +614,19 @@ namespace Payroll
             MessageBox.Show("hi");
         }
 
+        private void ChangeStatusLabel(ToolStripLabel status, string msg)
+        {
+            status.Text = msg;
+
+            var timer = new Timer();
+            timer.Interval = 5000;
+            timer.Tick += (s, e) =>
+            {
+                status.Text = "";
+                timer.Stop();
+            };
+            timer.Start();
+        }
 
     }
 }
