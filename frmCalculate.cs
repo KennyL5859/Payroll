@@ -105,7 +105,8 @@ namespace Payroll
 
         private void tosbtnExcel_Click(object sender, EventArgs e)
         {
-
+            // when user clicks Excel button, open a save file dialog and prompt
+            // user to choose file path
             SaveFileDialog saveWindow = new SaveFileDialog();
             saveWindow.Title = "Export data to Excel";
             saveWindow.Filter = "Excel New (.xlsx)|*.xlsx|Excel Old (.xls)|*xls";
@@ -115,36 +116,19 @@ namespace Payroll
                 return;
 
             string fileName = saveWindow.FileName;
+
+            // call write to excel method and pass in file name
             WriteToExcel(fileName);       
-        }
-
-      
-
-        private string[] SplitDollarAmounts(double dollar)
-        {
-            // convert $12.33 to [12, 33]
-            string[] parts = new string[2];
-            string sDollar = Math.Round(dollar, 2).ToString();
-
-            if (!sDollar.Contains('.'))
-            {
-                parts[0] = sDollar;
-                parts[1] = "00";
-            }
-            else
-            {
-                parts = sDollar.Split('.');
-            }
-
-            return parts;
         }
 
         private void WriteToExcel(string file)
         {
+            // open excel app, workwbook and call methods below
             object misValue = System.Reflection.Missing.Value;         
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Add(misValue);
 
+            // write each of the pages below to excel workbook
             WriteStateSummary(xlWorkBook);
             WriteEachEmployee(xlWorkBook);     
             WriteSummaryPage(xlWorkBook);
@@ -160,6 +144,7 @@ namespace Payroll
 
         private void WriteStateSummary(Excel.Workbook xlWorkbook)
         {
+            // writes the state umemployment taxes summary
             int numPeriods = GetNumPayPeriods();
             Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
             Excel.Worksheet xlSht = (Excel.Worksheet)xlWorkbook.Worksheets.Add();         
@@ -206,6 +191,7 @@ namespace Payroll
         
         private void WriteSummaryPage(Excel.Workbook xlWorkBook)
         {
+            // writes the total federal withholding and state withholding summary
             int numPeriods = GetNumPayPeriods();
             Employer newEmp = new Employer(WithHoldDic, EmpList, numPeriods);
             Excel.Borders sborders;
@@ -250,6 +236,7 @@ namespace Payroll
 
         private void WriteEachEmployee(Excel.Workbook xlWorkbook)
         {
+            // write each employee withholding on each separate sheet
             int numPeriods = GetNumPayPeriods();
 
             for (int i = 0; i <= 3; i++)
@@ -302,6 +289,7 @@ namespace Payroll
 
         private void tosmnuBtnIL941_Click(object sender, EventArgs e)
         {
+            // Write to form I941 (ILLINOIS WITHHOLDING INCOME TAX RETURN)
             ClearDDLColors();
 
             if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
@@ -394,6 +382,7 @@ namespace Payroll
             if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
                 return;
 
+            // opne a save file dialog and prompt user to enter file path
             SaveFileDialog saveWindow = new SaveFileDialog();
             saveWindow.Title = "Export data to PDF";
             saveWindow.Filter = "PDF (.pdf)|*.pdf";
@@ -402,6 +391,7 @@ namespace Payroll
             if (saveWindow.FileName == "")
                 return;
 
+            // calculate all the numbers needed to fill out the PDF form
             string fileName = saveWindow.FileName;
             int periods = GetNumPayPeriods();
             Employer emp = new Employer(WithHoldDic, EmpList, periods);
@@ -426,6 +416,7 @@ namespace Payroll
             double totalMedAndSSN = withDic.Sum(x => x.Value[1] + x.Value[2]);
             double totalTaxesBeforeAdj = withDic.Sum(x => x.Value[0] + x.Value[1] + x.Value[2]);
 
+            // format the $55.89 to [55, 89]
             string[] wagesSplit = SplitDollarAmounts(wages);
             string[] totalFedSplit = SplitDollarAmounts(totalFed);
             string[] totalSSNSplit = SplitDollarAmounts(totalSSNTax);
@@ -445,6 +436,7 @@ namespace Payroll
             //    lstResults.Items.Add(de.ToString());
             //}
 
+            // open a PdfStamper and write to the pdf and save it to file path
             PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
             AcroFields pdFF = pds.AcroFields;
 
@@ -539,6 +531,7 @@ namespace Payroll
 
         private int GetNumPayPeriods()
         {
+            // get number of periods based on user selection
             int numPeriods = 0;
 
             if (radWeekly.Checked)
@@ -553,6 +546,7 @@ namespace Payroll
 
         private void SetNumPayPeriods()
         {
+            // set correct number of months in drop down list as user picks pay frequency
             ddlPayPeriod.Items.Clear();
 
             if (radWeekly.Checked)
@@ -580,6 +574,7 @@ namespace Payroll
 
         private void AddNameToDDL()
         {
+            // add employee names to drop down list
             for (int i = 0; i < EmpList.Count; i++)
             {
                 string name = EmpList[i].firstName + " " + EmpList[i].lastName;
@@ -589,33 +584,28 @@ namespace Payroll
 
         private void AddQuartersToDDL()
         {
+            // Add quarters 1-4 to drop down list
             for (int i = 1; i <= 4; i++)
                 ddlQuarter.Items.Add(i);
         }
 
         private void radMonthly_CheckedChanged(object sender, EventArgs e)
         {
+            // if pay frequency changes, update the period drop down list
             SetNumPayPeriods();
         }
 
         private void ClearDDLColors()
         {
+            // change the drop down lists colors back to white
             ddlEmployees.BackColor = Color.White;
             ddlPayPeriod.BackColor = Color.White;
             ddlQuarter.BackColor = Color.White;
         }
 
-        private void tosTest_Click(object sender, EventArgs e)
-        {
-            Employer emp = new Employer(WithHoldDic, EmpList, 12);
-
-            var x = emp.CalcTotalQuarterlyWages(1);
-
-            MessageBox.Show("hi");
-        }
-
         private void ChangeStatusLabel(ToolStripLabel status, string msg)
         {
+            // displays the message, then erase it after 5 seconds
             status.Text = msg;
 
             var timer = new Timer();
@@ -626,6 +616,32 @@ namespace Payroll
                 timer.Stop();
             };
             timer.Start();
+        }
+
+        private string[] SplitDollarAmounts(double dollar)
+        {
+            // convert $12.33 to [12, 33]
+            string[] parts = new string[2];
+            string sDollar = Math.Round(dollar, 2).ToString();
+
+            if (!sDollar.Contains('.'))
+            {
+                parts[0] = sDollar;
+                parts[1] = "00";
+            }
+            else
+            {
+                parts = sDollar.Split('.');
+            }
+
+            return parts;
+        }
+
+        private void tosTest_Click(object sender, EventArgs e)
+        {
+            Employer emp = new Employer(WithHoldDic, EmpList, 12);
+            var x = emp.CalcTotalQuarterlyWages(1);
+            MessageBox.Show("hi");
         }
 
     }
