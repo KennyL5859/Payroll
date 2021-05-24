@@ -268,11 +268,6 @@ namespace Payroll
             return newEmp;
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            var x = EmpList[3].CalcStateTax(12, 1);
 
-            MessageBox.Show("HI");
-        }
     }
 }

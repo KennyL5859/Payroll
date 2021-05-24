@@ -295,6 +295,8 @@ namespace Payroll
             if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
                 return;
 
+            int quarter = ddlQuarter.SelectedIndex + 1;
+
             SaveFileDialog saveWindow = new SaveFileDialog();
             saveWindow.Title = "Export data to PDF";
             saveWindow.Filter = "PDF (.pdf)|*.pdf";
@@ -304,8 +306,18 @@ namespace Payroll
                 return;
 
             string fileName = saveWindow.FileName;
+
+            // call WriteIL941 method
+            WriteIL941(fileName, quarter);           
+
+            string msg = "Form I941 have been exported to " + fileName;
+            ChangeStatusLabel(tosStatus, msg);
+        }
+
+        private void WriteIL941(string fileName, int quarter)
+        {
+            // method that calculates and writes to IL-941 form
             int periods = GetNumPayPeriods();
-            int quarter = ddlQuarter.SelectedIndex + 1;
             Employer emp = new Employer(WithHoldDic, EmpList, periods);
             double line1 = emp.CalcTotalQuarterlyWages(quarter);
             int[] periodsRange = emp.GetPeriodDateRange(quarter);
@@ -382,9 +394,6 @@ namespace Payroll
             pds.FormFlattening = false;
             pds.Close();
 
-            string msg = "Form I941 have been exported to " + fileName;
-            ChangeStatusLabel(tosStatus, msg);
-
         }
 
         private void tosmnubtnFed941_Click(object sender, EventArgs e)
@@ -393,6 +402,8 @@ namespace Payroll
 
             if (!CheckDDL(ddlQuarter, "You must select a quarter to continue."))
                 return;
+
+            int quarter = ddlQuarter.SelectedIndex + 1;
 
             // opne a save file dialog and prompt user to enter file path
             SaveFileDialog saveWindow = new SaveFileDialog();
@@ -403,11 +414,16 @@ namespace Payroll
             if (saveWindow.FileName == "")
                 return;
 
-            // calculate all the numbers needed to fill out the PDF form
             string fileName = saveWindow.FileName;
+            CreateFed941(fileName, quarter);
+            string msg = "Form F941 have been exported to " + fileName;
+            ChangeStatusLabel(tosStatus, msg);
+        }
+
+        private void CreateFed941(string fileName, int quarter)
+        {
             int periods = GetNumPayPeriods();
             Employer emp = new Employer(WithHoldDic, EmpList, periods);
-            int quarter = ddlQuarter.SelectedIndex + 1;
             Dictionary<string, List<double>> payDic = emp.CalcQuarterlyStateWages(quarter);
             Dictionary<int, List<double>> withDic = emp.CalcFedQuarterlyWitholding(quarter);
             int[] periodsRange = emp.GetPeriodDateRange(quarter);
@@ -521,10 +537,7 @@ namespace Payroll
             pdFF.SetField("f3_32[0]", "60564");
             pds.FormFlattening = false;
             pds.Close();
-
-            string msg = "Form F941 have been exported to " + fileName;
-            ChangeStatusLabel(tosStatus, msg);
-        }
+        }      
 
         private void tosbtnF940_Click(object sender, EventArgs e)
         {
@@ -539,6 +552,14 @@ namespace Payroll
 
             string fileName = saveWindow.FileName;
 
+            CreateFed940(fileName);           
+
+            string msg = "Form Fed-940 has been exported to " + fileName;
+            ChangeStatusLabel(tosStatus, msg);
+        }
+
+        private void CreateFed940(string fileName)
+        {
             int periods = GetNumPayPeriods();
             Employer emp = new Employer(WithHoldDic, EmpList, periods);
             List<double> FutaList = emp.CalcFUTA();
@@ -555,11 +576,11 @@ namespace Payroll
             // read the pdf file and find the textfield values
             PdfReader pdr = new PdfReader(f940);
 
-            StringBuilder sb = new StringBuilder();
-            foreach (var de in pdr.AcroFields.Fields)
-            {
-                lstResults.Items.Add(de.ToString());
-            }
+            //StringBuilder sb = new StringBuilder();
+            //foreach (var de in pdr.AcroFields.Fields)
+            //{
+            //    lstResults.Items.Add(de.ToString());
+            //}
 
             // open a PdfStamper and write to the pdf and save it to file path
             PdfStamper pds = new PdfStamper(pdr, new FileStream(fileName, FileMode.Create));
@@ -583,7 +604,6 @@ namespace Payroll
             pdFF.SetField("f1_20[0]", "L");
             pdFF.SetField("f1_21[0]", totalWagesSplit[0]);
             pdFF.SetField("f1_22[0]", totalWagesSplit[1]);
-
             pdFF.SetField("f1_25[0]", excessWagesSplit[0]);
             pdFF.SetField("f1_26[0]", excessWagesSplit[1]);
             pdFF.SetField("f1_27[0]", excessWagesSplit[0]);
@@ -596,7 +616,6 @@ namespace Payroll
             pdFF.SetField("f1_40[0]", futaTaxSplit[1]);
             pdFF.SetField("f1_41[0]", futaTaxSplit[0]);
             pdFF.SetField("f1_42[0]", futaTaxSplit[1]);
-
             pdFF.SetField("f2_1[0]", "CASCO (USA) INC");
             pdFF.SetField("f2_2[0]", "36-4084647");
             pdFF.SetField("c2_1[0]", "Yes");
@@ -616,9 +635,32 @@ namespace Payroll
             pdFF.SetField("f2_27[0]", "60564");
             pds.FormFlattening = false;
             pds.Close();
+        }
 
-            string msg = "Form Fed-940 has been exported to " + fileName;
-            ChangeStatusLabel(tosStatus, msg);
+
+        private void tosbtnCreateAll_Click(object sender, EventArgs e)
+        {            
+
+            FolderBrowserDialog folder = new FolderBrowserDialog();
+            folder.ShowNewFolderButton = true;
+
+            DialogResult result = folder.ShowDialog();  
+            string path = "";
+
+            if (result == DialogResult.OK)
+            {         
+                path = folder.SelectedPath;
+            }
+
+            string test = Path.Combine(path, "test");
+
+            MessageBox.Show(test);
+
+            if (!Directory.Exists(test))
+                Directory.CreateDirectory(test);
+
+
+
         }
 
         private bool CheckDDL(ComboBox ddl, string msg)
@@ -743,14 +785,6 @@ namespace Payroll
 
             return parts;
         }
-
-        private void tosTest_Click(object sender, EventArgs e)
-        {
-            Employer emp = new Employer(WithHoldDic, EmpList, 12);
-            var x = emp.CalcTotalQuarterlyWages(1);
-            MessageBox.Show("hi");
-        }
-
 
     }
 }

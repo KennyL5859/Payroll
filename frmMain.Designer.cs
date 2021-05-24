@@ -40,7 +40,6 @@ namespace Payroll
             this.sstripMain = new System.Windows.Forms.StatusStrip();
             this.toslblMessage = new System.Windows.Forms.ToolStripStatusLabel();
             this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.tosMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEmployeeData)).BeginInit();
             this.sstripMain.SuspendLayout();
@@ -54,8 +53,7 @@ namespace Payroll
             this.tosbtnDelete,
             this.tosbtnEdit,
             this.tosbtnSave,
-            this.tosbtnCalculate,
-            this.toolStripButton1});
+            this.tosbtnCalculate});
             this.tosMain.Location = new System.Drawing.Point(0, 0);
             this.tosMain.Name = "tosMain";
             this.tosMain.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
@@ -79,7 +77,7 @@ namespace Payroll
             this.tosbtnDelete.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnDelete.Image")));
             this.tosbtnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnDelete.Name = "tosbtnDelete";
-            this.tosbtnDelete.Size = new System.Drawing.Size(34, 33);
+            this.tosbtnDelete.Size = new System.Drawing.Size(34, 28);
             this.tosbtnDelete.Text = "Delete";
             this.tosbtnDelete.Click += new System.EventHandler(this.tosbtnDelete_Click);
             // 
@@ -89,7 +87,7 @@ namespace Payroll
             this.tosbtnEdit.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnEdit.Image")));
             this.tosbtnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnEdit.Name = "tosbtnEdit";
-            this.tosbtnEdit.Size = new System.Drawing.Size(34, 33);
+            this.tosbtnEdit.Size = new System.Drawing.Size(34, 28);
             this.tosbtnEdit.Text = "Edit Employee";
             this.tosbtnEdit.Click += new System.EventHandler(this.tosbtnEdit_Click);
             // 
@@ -99,7 +97,7 @@ namespace Payroll
             this.tosbtnSave.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnSave.Image")));
             this.tosbtnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnSave.Name = "tosbtnSave";
-            this.tosbtnSave.Size = new System.Drawing.Size(34, 33);
+            this.tosbtnSave.Size = new System.Drawing.Size(34, 28);
             this.tosbtnSave.Text = "Save";
             this.tosbtnSave.Click += new System.EventHandler(this.tosbtnSave_Click);
             // 
@@ -109,7 +107,7 @@ namespace Payroll
             this.tosbtnCalculate.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnCalculate.Image")));
             this.tosbtnCalculate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnCalculate.Name = "tosbtnCalculate";
-            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 33);
+            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 28);
             this.tosbtnCalculate.Text = "Calculate Taxes";
             this.tosbtnCalculate.Click += new System.EventHandler(this.tosbtnCalculate_Click);
             // 
@@ -152,16 +150,6 @@ namespace Payroll
             this.tosStatus.Name = "tosStatus";
             this.tosStatus.Size = new System.Drawing.Size(0, 15);
             // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(34, 28);
-            this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -195,7 +183,6 @@ namespace Payroll
         private System.Windows.Forms.ToolStripButton tosbtnSave;
         private System.Windows.Forms.ToolStripButton tosbtnCalculate;
         private System.Windows.Forms.ToolStripStatusLabel tosStatus;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
 

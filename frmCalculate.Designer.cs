@@ -37,7 +37,7 @@ namespace Payroll
             this.tosddbtnPDF = new System.Windows.Forms.ToolStripDropDownButton();
             this.tosmnubtnFed941 = new System.Windows.Forms.ToolStripMenuItem();
             this.tosmnuBtnIL941 = new System.Windows.Forms.ToolStripMenuItem();
-            this.tosTest = new System.Windows.Forms.ToolStripButton();
+            this.tosbtnF940 = new System.Windows.Forms.ToolStripMenuItem();
             this.lblEmployee = new System.Windows.Forms.Label();
             this.lblPayPeriod = new System.Windows.Forms.Label();
             this.lblQuarter = new System.Windows.Forms.Label();
@@ -52,7 +52,7 @@ namespace Payroll
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tosStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.Timer = new System.Windows.Forms.Timer(this.components);
-            this.tosbtnF940 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tosbtnCreateAll = new System.Windows.Forms.ToolStripButton();
             this.tosMain.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -64,11 +64,11 @@ namespace Payroll
             this.tosbtnCalculate,
             this.tosbtnExcel,
             this.tosddbtnPDF,
-            this.tosTest});
+            this.tosbtnCreateAll});
             this.tosMain.Location = new System.Drawing.Point(0, 0);
             this.tosMain.Name = "tosMain";
             this.tosMain.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.tosMain.Size = new System.Drawing.Size(836, 33);
+            this.tosMain.Size = new System.Drawing.Size(836, 38);
             this.tosMain.TabIndex = 0;
             this.tosMain.Text = "toolStrip1";
             // 
@@ -78,7 +78,7 @@ namespace Payroll
             this.tosbtnCalculate.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnCalculate.Image")));
             this.tosbtnCalculate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnCalculate.Name = "tosbtnCalculate";
-            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 28);
+            this.tosbtnCalculate.Size = new System.Drawing.Size(34, 33);
             this.tosbtnCalculate.Text = "Calculate";
             this.tosbtnCalculate.Click += new System.EventHandler(this.tosbtnCalculate_Click);
             // 
@@ -88,7 +88,7 @@ namespace Payroll
             this.tosbtnExcel.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnExcel.Image")));
             this.tosbtnExcel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosbtnExcel.Name = "tosbtnExcel";
-            this.tosbtnExcel.Size = new System.Drawing.Size(34, 28);
+            this.tosbtnExcel.Size = new System.Drawing.Size(34, 33);
             this.tosbtnExcel.Text = "Export to Excel";
             this.tosbtnExcel.Click += new System.EventHandler(this.tosbtnExcel_Click);
             // 
@@ -102,32 +102,29 @@ namespace Payroll
             this.tosddbtnPDF.Image = ((System.Drawing.Image)(resources.GetObject("tosddbtnPDF.Image")));
             this.tosddbtnPDF.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tosddbtnPDF.Name = "tosddbtnPDF";
-            this.tosddbtnPDF.Size = new System.Drawing.Size(42, 28);
+            this.tosddbtnPDF.Size = new System.Drawing.Size(42, 33);
             this.tosddbtnPDF.Text = "Export to PDF";
             // 
             // tosmnubtnFed941
             // 
             this.tosmnubtnFed941.Name = "tosmnubtnFed941";
-            this.tosmnubtnFed941.Size = new System.Drawing.Size(270, 34);
+            this.tosmnubtnFed941.Size = new System.Drawing.Size(180, 34);
             this.tosmnubtnFed941.Text = "Fed-941";
             this.tosmnubtnFed941.Click += new System.EventHandler(this.tosmnubtnFed941_Click);
             // 
             // tosmnuBtnIL941
             // 
             this.tosmnuBtnIL941.Name = "tosmnuBtnIL941";
-            this.tosmnuBtnIL941.Size = new System.Drawing.Size(270, 34);
+            this.tosmnuBtnIL941.Size = new System.Drawing.Size(180, 34);
             this.tosmnuBtnIL941.Text = "IL-941";
             this.tosmnuBtnIL941.Click += new System.EventHandler(this.tosmnuBtnIL941_Click);
             // 
-            // tosTest
+            // tosbtnF940
             // 
-            this.tosTest.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tosTest.Image = ((System.Drawing.Image)(resources.GetObject("tosTest.Image")));
-            this.tosTest.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tosTest.Name = "tosTest";
-            this.tosTest.Size = new System.Drawing.Size(34, 28);
-            this.tosTest.Text = "toolStripButton1";
-            this.tosTest.Click += new System.EventHandler(this.tosTest_Click);
+            this.tosbtnF940.Name = "tosbtnF940";
+            this.tosbtnF940.Size = new System.Drawing.Size(180, 34);
+            this.tosbtnF940.Text = "Fed-940";
+            this.tosbtnF940.Click += new System.EventHandler(this.tosbtnF940_Click);
             // 
             // lblEmployee
             // 
@@ -281,12 +278,15 @@ namespace Payroll
             // 
             this.Timer.Interval = 1000;
             // 
-            // tosbtnF940
+            // tosbtnCreateAll
             // 
-            this.tosbtnF940.Name = "tosbtnF940";
-            this.tosbtnF940.Size = new System.Drawing.Size(270, 34);
-            this.tosbtnF940.Text = "Fed-940";
-            this.tosbtnF940.Click += new System.EventHandler(this.tosbtnF940_Click);
+            this.tosbtnCreateAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tosbtnCreateAll.Image = ((System.Drawing.Image)(resources.GetObject("tosbtnCreateAll.Image")));
+            this.tosbtnCreateAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tosbtnCreateAll.Name = "tosbtnCreateAll";
+            this.tosbtnCreateAll.Size = new System.Drawing.Size(34, 33);
+            this.tosbtnCreateAll.Text = "Export All";
+            this.tosbtnCreateAll.Click += new System.EventHandler(this.tosbtnCreateAll_Click);
             // 
             // frmCalculate
             // 
@@ -336,12 +336,12 @@ namespace Payroll
         private System.Windows.Forms.Label lblPayFreq;
         private System.Windows.Forms.ListBox lstResults;
         private System.Windows.Forms.ToolStripDropDownButton tosddbtnPDF;
-        private System.Windows.Forms.ToolStripButton tosTest;
         private System.Windows.Forms.ToolStripMenuItem tosmnubtnFed941;
         private System.Windows.Forms.ToolStripMenuItem tosmnuBtnIL941;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tosStatus;
         private System.Windows.Forms.Timer Timer;
         private System.Windows.Forms.ToolStripMenuItem tosbtnF940;
+        private System.Windows.Forms.ToolStripButton tosbtnCreateAll;
     }
 }
