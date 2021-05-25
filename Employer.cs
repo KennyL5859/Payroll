@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Payroll
 {
+    // employer class and its fields
     public class Employer
     {
         public Dictionary<string, WithholdTable> withHoldDic { get; set; }
@@ -15,7 +16,7 @@ namespace Payroll
         private double stateTaxableLimit = 12960;
         private double stateTaxableRate = 0.00675;
 
-
+        // constructor
         public Employer(Dictionary<string, WithholdTable> wDic, List<Employee> eList, int periods)
         {
             this.withHoldDic = wDic;
@@ -25,6 +26,7 @@ namespace Payroll
 
         public double CalcSSNTax(int period)
         {
+            // calculate SSN employer share
             double ssnTax = 0;
 
             for (int i = 0; i < EmpList.Count; i++)
@@ -35,6 +37,7 @@ namespace Payroll
 
         public double CalcMediTax(int period)
         {
+            // calculate employer share medicare tax
             double medTax = 0;
 
             for (int i = 0; i < EmpList.Count; i++)
@@ -45,6 +48,7 @@ namespace Payroll
 
         public double CalcFedTax(int period)
         {
+            // calculate Federal Tax
             double fedTax = 0;
 
             for (int i = 0; i < EmpList.Count; i++)
@@ -115,6 +119,8 @@ namespace Payroll
 
         public Dictionary<string, List<double>> CalcQuarterlyStateWages(int quarter)
         {
+            // calculates the taxable wages, excess wages, total wages needed for
+            // state umemployment numbers
             Dictionary<string, List<double>> quarterDic = new Dictionary<string, List<double>>();
 
             int[] periodRange = GetPeriodDateRange(quarter);
@@ -151,6 +157,7 @@ namespace Payroll
 
         public List<double> CalcFUTA()
         {
+            // calculate the numbers need for Form I941
             double totalWages = 0;
             double excessWages = 0;    
 

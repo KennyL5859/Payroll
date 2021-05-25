@@ -16,6 +16,7 @@ namespace Payroll
 {
     public partial class frmMain : Form
     {
+        // path to all the required files needed to read from
         static string filePath = AppDomain.CurrentDomain.BaseDirectory;
         string EMPDATAPATH = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\EmpInfo.txt"));
         string IRS_PERCENT = Path.GetFullPath(Path.Combine(filePath, @"..\..\Required\IRS_Percentage.xlsx"));
@@ -34,6 +35,7 @@ namespace Payroll
 
         private void tosbtnAdd_Click(object sender, EventArgs e)
         {
+            // open AddEdit form and update the grid list
             frmAddEditEmp addForm = new frmAddEditEmp(false, EmpList);
             addForm.ShowDialog();
             UpdateFile();
@@ -41,6 +43,7 @@ namespace Payroll
 
         private void tosbtnDelete_Click(object sender, EventArgs e)
         {
+            // deltes a specific employee (row) from records
             int selectedRows = dgvEmployeeData.SelectedRows.Count;
             DialogResult result;
             int rowIndex = dgvEmployeeData.SelectedCells[0].RowIndex;
@@ -82,6 +85,7 @@ namespace Payroll
 
         private void tosbtnEdit_Click(object sender, EventArgs e)
         {
+            // open the AddEdit form to edit an employee
             int empIndex = dgvEmployeeData.CurrentCell.RowIndex;
             frmAddEditEmp editForm = new frmAddEditEmp(true, EmpList, empIndex);
             editForm.ShowDialog();
@@ -90,6 +94,7 @@ namespace Payroll
 
         private void tosbtnSave_Click(object sender, EventArgs e)
         {
+            // when user press save, write it to text file
             WriteToFile();
             MessageBox.Show("Employee data have been saved");
         }
@@ -107,6 +112,8 @@ namespace Payroll
 
         private void tosbtnCalculate_Click(object sender, EventArgs e)
         {
+            // load the IRS withold rates (Excel File) into a Wtihhold object and
+            // open the frmCalculate form
             SetWithholdDic();
             frmCalculate calcForm = new frmCalculate(EmpList, WithHoldDic);
             calcForm.ShowDialog();           
@@ -115,6 +122,7 @@ namespace Payroll
 
         private void SetWithholdDic()
         {
+            // Loading all the rates from Excel file, into the Withold object dictionary
             List<string> fStatusList = new List<string> { "S", "S+", "MFJ", "MFJ+", "HOH", "HOH+" };
             WithHoldDic.Clear();
 
@@ -159,6 +167,8 @@ namespace Payroll
 
         private void ReadFile()
         {
+            // Read the employee data in txt file into List<Employee> 
+            // then set it onto the gridview
             string empFile = "";
 
             // navigate and open up the employee data source
@@ -189,6 +199,8 @@ namespace Payroll
 
         private void WriteToFile()
         {
+            // Write all employee data onto text file
+
             File.WriteAllText(EMPDATAPATH, string.Empty);
 
             using (StreamWriter wr = new StreamWriter(EMPDATAPATH))
@@ -211,6 +223,7 @@ namespace Payroll
 
         private void UpdateFile()
         {
+            // Updates the employee data and update the grid display
             dgvEmployeeData.DataSource = null;
             WriteToFile();
             EmpList.Clear();
@@ -219,6 +232,7 @@ namespace Payroll
 
         private void ChangeDataColumnNames()
         {
+            // Change the datagridview column names
             dgvEmployeeData.Columns[0].HeaderText = "First Name";
             dgvEmployeeData.Columns[1].HeaderText = "Last Name";
             dgvEmployeeData.Columns[2].HeaderText = "SSN";
@@ -267,7 +281,5 @@ namespace Payroll
 
             return newEmp;
         }
-
-
     }
 }

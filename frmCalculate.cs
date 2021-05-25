@@ -118,7 +118,11 @@ namespace Payroll
             string fileName = saveWindow.FileName;
 
             // call write to excel method and pass in file name
-            WriteToExcel(fileName);       
+            WriteToExcel(fileName);
+
+            // show file path for 5 seconds
+            string msg = "Excel file saved to " + fileName.ToString();
+            ChangeStatusLabel(tosStatus, msg);
         }
 
         private void WriteToExcel(string file)
@@ -136,10 +140,6 @@ namespace Payroll
             xlWorkBook.SaveAs(file, Excel.XlFileFormat.xlOpenXMLWorkbook, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
-
-            // show file path for 5 seconds
-            string msg = "Excel file saved to " + file.ToString();
-            ChangeStatusLabel(tosStatus, msg);
         }
 
         private void WriteStateSummary(Excel.Workbook xlWorkbook)
@@ -639,27 +639,47 @@ namespace Payroll
 
 
         private void tosbtnCreateAll_Click(object sender, EventArgs e)
-        {            
+        {
 
+            if (!CheckDDL(ddlQuarter, "You must select a quarter"))
+                return;
+
+            // create folder name based on quarter and year
+            int intQuarter = ddlQuarter.SelectedIndex + 1;
+            string year = DateTime.Now.Year.ToString();
+            string quarter = "Q" + (ddlQuarter.SelectedIndex + 1).ToString();
+            string folderName = "Casco " + year + " " + quarter;
+
+            // create a new Folder Browse Dialog and open it
             FolderBrowserDialog folder = new FolderBrowserDialog();
             folder.ShowNewFolderButton = true;
-
+            folder.Description = "Select where to save files";
             DialogResult result = folder.ShowDialog();  
             string path = "";
 
-            if (result == DialogResult.OK)
-            {         
-                path = folder.SelectedPath;
-            }
+            // once user selects a folder, get the path
+            if (result == DialogResult.OK)                
+                path = folder.SelectedPath;            
 
-            string test = Path.Combine(path, "test");
+            string foldPath = Path.Combine(path, folderName);
 
-            MessageBox.Show(test);
+            // create a directory if there isn't one already
+            if (!Directory.Exists(foldPath))
+                Directory.CreateDirectory(foldPath);
 
-            if (!Directory.Exists(test))
-                Directory.CreateDirectory(test);
+            // create the files and save to the paths directed
+            string f941_Path = Path.Combine(foldPath, "F941 " + quarter + ".pdf");
+            string f940_Path = Path.Combine(foldPath, "940.pdf");
+            string i941_Path = Path.Combine(foldPath, "I941 " + quarter + ".pdf");
+            string excel_Path = Path.Combine(foldPath, "Employee_Breakdown.xlsx");
 
+            CreateFed940(f940_Path);
+            CreateFed941(f941_Path, intQuarter);
+            WriteIL941(i941_Path, intQuarter);
+            WriteToExcel(excel_Path);
 
+            string msg = "All files save to " + foldPath.ToString();
+            ChangeStatusLabel(tosStatus, msg);
 
         }
 

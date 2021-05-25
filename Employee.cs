@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Payroll
 {
+    // Employee class that holds employee data
     public class Employee
     {
         public string firstName { get; set; }
@@ -32,7 +33,7 @@ namespace Payroll
         private const double MedAddRate = 0.0235;
         private const double StateRate = 0.0495;
 
-
+        // constructor for Employee class
         public Employee(string fName, string lName, string ssn, DateTime dob, string fStatus,
             int withhold, int child, int other, double xFed, double xState, bool multiple,
             string street, string city, string state, string zipCode, double salary, DateTime start,
@@ -57,9 +58,10 @@ namespace Payroll
             this.startDate = start;
             this.endDate = end;
         }
-
+        
         public double salaryPerPeriod(int periods, int selectedPeriod)
         {
+            // calculates salary per period
             Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double salary = this.salary / periods * periodsRate[selectedPeriod];
             return Math.Round(salary, 2);
@@ -67,6 +69,7 @@ namespace Payroll
 
         public double CalcQuarterlySalary(int periods, int beginP, int selectedPeriod)
         {
+            // calculate salary from beginning period to end period
             double totalSalary = 0;
 
             for (int i = beginP; i <= selectedPeriod; i++)
@@ -77,6 +80,7 @@ namespace Payroll
 
         public double CalcSSNTax(int periods, int selectedPeriod)
         {
+            // calculate SSN tax withholding
             Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double wage = 0;
             double ssTax = 0;
@@ -94,6 +98,7 @@ namespace Payroll
 
         public double CalcMedTax(int periods, int selectedPeriod)
         {
+            // Calculate medicare withholding tax rates
             Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double regularRate = this.salary;
             double excessRate = 0;
@@ -123,6 +128,7 @@ namespace Payroll
 
         public double CalcStateTax(int periods, int selectedPeriod)
         {
+            // Calculates state withholding rates
             Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double stateTax = 0;
             double deductions = ((this.childDep * 2375) + (this.otherDep * 1000)) / periods;
@@ -140,7 +146,7 @@ namespace Payroll
         public double CalcFedTax(int periods, Dictionary<string, WithholdTable> withDic, 
             int selectPeriod)
         {
-
+            // Calculates the federal withholding
             Dictionary<int, double> periodsRate = GetPeriodsWorked(periods);
             double periodSalary = this.salary / periods;
             double salary = periodSalary * periodsRate[selectPeriod] * periods;
@@ -189,6 +195,7 @@ namespace Payroll
         public double CalcFedTaxCulmulative(int period, Dictionary<string, WithholdTable> withDic,
             int selectedPeriod)
         {
+            // calculates culmulative federal withholding
             double culmuFedTax = 0;
 
             for (int i = 1; i <= selectedPeriod; i++)            
@@ -199,6 +206,7 @@ namespace Payroll
 
         public double CalcStateTaxCulmulative(int periods, int selectedPeriod)
         {
+            // calculate culmulative state withholding
             double stateTax = 0;
 
             for (int i = 1; i <= selectedPeriod; i++)
@@ -209,6 +217,7 @@ namespace Payroll
 
         public double CalcSSNTaxCulmulative(int periods, int selectedPeriod)
         {
+            // culmulative SSN tax
             double ssnTax = 0;
 
             for (int i = 1; i <= selectedPeriod; i++)
@@ -219,6 +228,7 @@ namespace Payroll
 
         public double CalcMedTaxCulmulative(int periods, int selectedPeriod)
         {
+            // culmulative medicare tax
             double medTax = 0;
 
             for (int i = 1; i <= selectedPeriod; i++)
@@ -230,6 +240,7 @@ namespace Payroll
         public double CalcNetPay(int periods, Dictionary<string, WithholdTable> withDic,
             int selectedPeriod)
         {
+            // calculates the net pay after taxes are withheld
             double netPay = 0;
 
             Dictionary<int, double> periodsWorked = GetPeriodsWorked(periods);
@@ -246,6 +257,7 @@ namespace Payroll
         public double CalcNetPayCulmulative(int periods, Dictionary<string, WithholdTable> withDic,
             int selectedPeriod)
         {
+            // calculates the culmulative net pay
             double netPay = 0;
 
             for (int i = 1; i <= selectedPeriod; i++)
@@ -256,6 +268,7 @@ namespace Payroll
 
         public double CalcTotalTax(int periods, Dictionary<string, WithholdTable> withDic, int selectPeriod)
         {            
+            // calculates the total taxes (combine all withholdings)
             double fed = CalcFedTaxCulmulative(periods, withDic, selectPeriod);
             double state = CalcStateTaxCulmulative(periods, selectPeriod);
             double fica = CalcSSNTaxCulmulative(periods, selectPeriod);
@@ -266,6 +279,8 @@ namespace Payroll
 
         public Dictionary<int, double> GetPeriodsWorked(int periods)
         {
+            // Dictionary that gets the number of periods worked 
+            // based on start and end date
             Dictionary<int, double> periodsWorked = new Dictionary<int, double>();
 
             if (periods == 12)
@@ -278,6 +293,7 @@ namespace Payroll
 
         public Dictionary<int, double> GetWeeksWorked(int periods)
         {
+            // Get number of weeks worked based on start/end date
             int numDays = 365 / periods;
             Dictionary<int, double> weeksWorked = new Dictionary<int, double>();
             int curYear = DateTime.Now.Year;
@@ -327,6 +343,7 @@ namespace Payroll
 
         public Dictionary<int, double> GetMonthsWorked()
         {
+            // Get number of months worked based on start and end date
             Dictionary<int, double> monthsWorked = new Dictionary<int, double>();
             int curYear = DateTime.Now.Year;
             DateTime begin = new DateTime(curYear, 1, 1);
@@ -376,6 +393,7 @@ namespace Payroll
 
         public string[] GetEmpStringAttributes()
         {
+            // gets employee attributes and put it into an array
             string[] EmpAttributes = new string[18];
             EmpAttributes[0] = this.firstName;
             EmpAttributes[1] = this.lastName;

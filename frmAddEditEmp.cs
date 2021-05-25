@@ -128,6 +128,7 @@ namespace Payroll
 
         private void AddNewEmployee()
         {
+            // Add new employee to list
             string fName = mstFirstName.Text;
             string lName = mstLastName.Text;
             string ssn = mstSSN.Text;
@@ -166,6 +167,7 @@ namespace Payroll
 
         private void ClearBackgroundColors()
         {
+            // create the textbox background colors to white
             mstFirstName.BackColor = Color.White;
             mstLastName.BackColor = Color.White;
             mstSSN.BackColor = Color.White;
@@ -184,6 +186,7 @@ namespace Payroll
 
         private bool CheckDDLLists(ComboBox ddl, string msg)
         {
+            // checks if drop down list has a selection
             if (ddl.SelectedIndex == -1)
             {
                 MessageBox.Show(msg);
@@ -199,6 +202,7 @@ namespace Payroll
 
         private bool CheckDateTime(MaskedTextBox mst, string msg)
         {
+            // Check date time is in correct format
             string pattern = @"\d{2}\/\d{2}\/\d{4}";
             Match m = Regex.Match(mst.Text, pattern);
 
@@ -217,6 +221,7 @@ namespace Payroll
 
         private bool CheckSSN(MaskedTextBox mst, string msg)
         {
+            // check SSN is in correct format
             string pattern = @"\d{3}-?\d{2}-?\d{4}";
             Match m = Regex.Match(mstSSN.Text, pattern);
 
@@ -236,6 +241,7 @@ namespace Payroll
 
         private bool CheckNull(MaskedTextBox mst, string msg)
         {
+            // Check if textbox is empty or not
             if (mst.Text == "")
             {
                 MessageBox.Show(msg);
@@ -251,7 +257,7 @@ namespace Payroll
 
         private void UpdateEmployeeFields()
         {
-
+            // Update the employee list when user edits the data
             EmpList[empIndex].firstName = mstFirstName.Text;
             EmpList[empIndex].lastName = mstLastName.Text;
             EmpList[empIndex].SSN = mstSSN.Text;
@@ -284,11 +290,11 @@ namespace Payroll
             EmpList[empIndex].endDate = end;
 
             this.Close();
-
         }
 
         private void FillInFields()
         {
+            // when form opens in edit mode, fill in the employee being edited's data
             Employee sEmp = EmpList[empIndex];
             mstFirstName.Text = sEmp.firstName;
             mstLastName.Text = sEmp.lastName;
@@ -316,10 +322,8 @@ namespace Payroll
 
             chkMultiple.Checked = sEmp.multipleJobs;
             dtpStart.Value = sEmp.startDate;
-            dtpEnd.Value = sEmp.endDate;            
+            dtpEnd.Value = sEmp.endDate;      
 
         }
-
-
     }
 }
